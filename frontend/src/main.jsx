@@ -13,7 +13,7 @@ import { Toaster } from 'react-hot-toast';
 axios.defaults.baseURL = "http://localhost:5000/api/v1";
 
 // Allow setting the cookies directly from the backend
-axios.defaults.withCredantials = true;
+axios.defaults.withCredentials = true;
 
 const theme = createTheme({
   typography: {

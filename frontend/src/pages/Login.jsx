@@ -1,8 +1,9 @@
 import { Box, Typography, Button } from "@mui/material";
 import CustomizedInput from "../components/shared/CustomizedInput";
 import { IoIosLogIn } from "react-icons/io";
-import { toast } from 'react-hot-toast'
-;
+import { toast } from 'react-hot-toast';
+import { useAuth } from "../context/AuthContext";
+
 
 
 function Login() {
@@ -83,7 +84,7 @@ function Login() {
               mb: 2,
             }}
           >
-            Login
+            Đăng nhập
           </Typography>
 
           <form onSubmit={handleSubmit}>
@@ -95,7 +96,7 @@ function Login() {
             <CustomizedInput
               type="password"
               name="password"
-              label="Password"
+              label="Mật khẩu"
             />
 
             <Button
@@ -114,7 +115,7 @@ function Login() {
               }}
               endIcon={<IoIosLogIn />}
             >
-              Login
+              Đăng Nhập
             </Button>
           </form>
         </Box>

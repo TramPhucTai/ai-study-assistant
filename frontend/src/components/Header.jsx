@@ -36,13 +36,13 @@ function Header() {
                 <NavigationLink
                   bg="#00E5FF"
                   to="/login"
-                  text="Login"
+                  text="Đăng nhập"
                   textColor="black"
                 />
                 <NavigationLink
                   bg="#51538f"
                   to="/signup"
-                  text="Signup"
+                  text="Đăng ký"
                   textColor="white"
                   onClick={auth.logout}
                 />

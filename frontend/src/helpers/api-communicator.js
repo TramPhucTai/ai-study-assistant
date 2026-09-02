@@ -1,13 +1,35 @@
 import axios from "axios";
 
+
+// Fixed v1
+
 export const loginUser = async (email, password) => {
-  const res = await axios.post('/user/login', {email, password });
+  const res = await axios.post("/user/login", {
+    email,
+    password,
+  });
 
-  if (res.status !== 200) {
-    throw new Error('Unable to login');
-  }
+  return res.data;
+};
 
-  const data = res.data;
+export const checkAuthStatus = async () => {
+  const res = await axios.get("/user/auth-status");
 
-  return data;
-}
+  return res.data;
+};
+
+
+
+// Original
+
+// export const loginUser = async (email, password) => {
+//   const res = await axios.post('/user/login', {email, password });
+
+//   if (res.status !== 200) {
+//     throw new Error('Unable to login');
+//   }
+
+//   const data = res.data;
+
+//   return data;
+// }
