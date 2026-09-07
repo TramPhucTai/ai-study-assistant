@@ -18,6 +18,18 @@ export const checkAuthStatus = async () => {
   return res.data;
 };
 
+export const sendChatRequest = async (message) => {
+  const res = await axios.post("/chat/new", {message});
+
+  return res.data;
+};
+
+export const getUserChats = async () => {
+  const res = await axios.get("/chat/all-chats");
+
+  return res.data;
+};
+
 
 
 // Original

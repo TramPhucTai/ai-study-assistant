@@ -151,8 +151,6 @@ export const verifyUser = async (req, res, next) => {
       return res.status(401).send('User not registered OR Token malfunctioned');
     }
 
-    console.log(user._id.toString(), res.locals.jwtData.id)
-
     if (user._id.toString() !== res.locals.jwtData.id) {
       return res.status(401).send("Permission didn't match");
     }
