@@ -1,7 +1,6 @@
 import axios from "axios";
 
 
-// Fixed v1
 
 export const loginUser = async (email, password) => {
   const res = await axios.post("/user/login", {
@@ -30,18 +29,8 @@ export const getUserChats = async () => {
   return res.data;
 };
 
+export const logoutUser = async () => {
+  const res = await axios.get("/user/logout");
 
-
-// Original
-
-// export const loginUser = async (email, password) => {
-//   const res = await axios.post('/user/login', {email, password });
-
-//   if (res.status !== 200) {
-//     throw new Error('Unable to login');
-//   }
-
-//   const data = res.data;
-
-//   return data;
-// }
+  return res.data;
+};

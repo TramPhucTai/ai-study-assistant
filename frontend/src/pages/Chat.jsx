@@ -3,13 +3,16 @@ import { IoMdSend } from 'react-icons/io';
 import { red } from '@mui/material/colors';
 import { useAuth } from '../context/AuthContext';
 import ChatItem from '../components/chat/ChatItem';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { getUserChats, sendChatRequest } from '../helpers/api-communicator.js';
 import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router';
 
 
 
 function Chat() {
+  const navigate = useNavigate();
+
   const inputRef = useRef(null);
 
   const auth = useAuth();
@@ -50,6 +53,13 @@ function Chat() {
         })
     }
   }, [auth]);
+
+  // Protected Routes and Logout user request
+  useEffect(() => {
+    if (!auth?.user) {
+      return navigate('/login')
+    }
+  }, [auth])
 
   return (
     <Box

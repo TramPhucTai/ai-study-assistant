@@ -3,10 +3,14 @@ import CustomizedInput from "../components/shared/CustomizedInput";
 import { IoIosLogIn } from "react-icons/io";
 import { toast } from 'react-hot-toast';
 import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 
 
 function Login() {
+  const navigate = useNavigate();
+
   const auth = useAuth()
 
   const handleSubmit = async (e) => {
@@ -32,6 +36,12 @@ function Login() {
 
     }
   };
+
+  useEffect(() => {
+    if (auth?.user) {
+      return navigate('/chat');
+    }
+  }, [auth])
 
   return (
     <Box

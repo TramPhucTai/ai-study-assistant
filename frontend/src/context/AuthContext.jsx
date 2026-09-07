@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { checkAuthStatus, loginUser } from "../helpers/api-communicator.js";
+import { checkAuthStatus, loginUser, logoutUser } from "../helpers/api-communicator.js";
 
 const AuthContext = createContext(null);
 
@@ -35,7 +35,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    // Logout logic will go here
+    await logoutUser();
+    setIsLoggedIn(false);
+    setUser(null);
+    window.location.reload();
   };
 
   const value = {
