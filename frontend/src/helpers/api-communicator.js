@@ -11,6 +11,16 @@ export const loginUser = async (email, password) => {
   return res.data;
 };
 
+export const signupUser = async (name, email, password) => {
+  const res = await axios.post("/user/signup", {
+    name,
+    email,
+    password,
+  });
+
+  return res.data;
+};
+
 export const checkAuthStatus = async () => {
   const res = await axios.get("/user/auth-status");
 
