@@ -21,59 +21,51 @@ export const generateChatCompletion = async (req, res, next) => {
       })
     }
 
-    // 1. Create new Gemini user step
-    const userStep = {
-      type: "user_input",
-      content: [
-        {
-          type: "text",
-          text: message
-        }
-      ]
-    };
-
-    // 2. Add it to Gemini history
-    user.geminiHistory.push(userStep);
+    // Get previous chats from MongoDB
+    const chats = user.chats.map(({ role, content }) => ({
+      role,
+      content
+    }));
 
     // Debug
-    console.log(
-      "Gemini history before request:",
-      JSON.stringify(user.geminiHistory, null, 2)
-    );
+    console.log("Previous chats:", JSON.stringify(chats, null, 2));
 
-    // 3. Send full history to Gemini
-    const interaction = await ai.interactions.create({
-      model: "gemini-3.8-flash",
-      store: false,
-      input: user.geminiHistory
+    // Add the new user message to the conversation
+    chats.push({
+      role: "user",
+      content: message
     });
 
     // Debug
     console.log(
-      "Gemini interaction:",
-      interaction
+      "Chats sent to Gemini:",
+      JSON.stringify(chats, null, 2)
     );
 
-    // 4. Get text response
-    const response = interaction.output_text;
-
-    // 5. Save Gemini-generated steps exactly as returned
-    user.geminiHistory.push(
-      ...interaction.steps
-    );
-
-    // 6. Save simple messages for frontend
+    // Save the user's message
     user.chats.push({
       role: "user",
       content: message
     });
 
+    // Send prompt to Gemini
+    const interaction = await ai.interactions.create({
+      model: "gemini-3.8-flash",
+      input: message
+    });
+
+    // Debug
+    console.log("Gemini interaction:", interaction);
+
+    // Get Gemini's response
+    const response = interaction.output_text;
+
+    // Save Gemini's response
     user.chats.push({
       role: "assistant",
       content: response
     });
 
-    // 7. Save everything
     await user.save();
 
     return res.status(200).json({

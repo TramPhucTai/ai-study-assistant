@@ -20,6 +20,15 @@ const chatSchema = new mongoose.Schema({
 
 });
 
+// Store Gemini interaction steps exactly as returned
+const geminiStepSchema = new mongoose.Schema(
+  {},
+  {
+    strict: false,
+    _id: false
+  }
+);
+
 const userSchema = new mongoose.Schema({
 
   name: {
@@ -39,6 +48,9 @@ const userSchema = new mongoose.Schema({
   },
 
   chats: [chatSchema],
+  
+  // Used to send conversation context back to Gemini
+  geminiHistory: [geminiStepSchema]
 
 });
 
