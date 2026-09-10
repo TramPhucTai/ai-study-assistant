@@ -9,6 +9,8 @@ export const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY
 });
 
+export const geminiModel = 'gemini-3.6-flash';
+
 
 
 // async function main() {

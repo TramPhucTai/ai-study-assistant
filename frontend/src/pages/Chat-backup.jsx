@@ -4,7 +4,7 @@ import { red } from '@mui/material/colors';
 import { useAuth } from '../context/AuthContext';
 import ChatItem from '../components/chat/ChatItem';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { getUserChats, streamChatRequest } from '../helpers/api-communicator.js';
+import { getUserChats, sendChatRequest } from '../helpers/api-communicator.js';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 
@@ -29,69 +29,57 @@ function Chat() {
       inputRef.current.value = '';
     };
 
-    const userMessage = {
-      role: "user",
+    const newMessage = {
+      role: 'user',
       content
     };
 
-    const assistantPlaceholder = {
-      role: "assistant",
-      content: ""
-    };
-
-    /*
-     * Add both messages immediately.
-     * The last message will receive Gemini's text chunks.
-     */
-    setChatMessages((previous) => [
-      ...previous,
-      userMessage,
-      assistantPlaceholder
-    ]);
+    setChatMessages((prev) => [...prev, newMessage]);
 
     setIsGenerating(true);
 
     try {
 
-      await streamChatRequest(content, (textDelta) => {
-        setChatMessages((previous) => {
-          const updatedMessages = [...previous];
-          const assistantIndex = updatedMessages.length - 1;
-
-          updatedMessages[assistantIndex] = {
-            ...updatedMessages[assistantIndex],
-            content:
-              updatedMessages[assistantIndex].content + textDelta
-          };
-
-          return updatedMessages;
-        });
-      });
+      const chatData = await sendChatRequest(content);
+      setChatMessages([...chatData.chats]);
 
     } catch (error) {
 
-      toast.error(error.message);
+      console.log(error);
 
-      /*
-       * Remove the empty/partially generated assistant message after failure.
-       * You could retain partial output instead if you prefer.
-       */
-      setChatMessages((previous) => {
-        const updatedMessages = [...previous];
+      const errorMessage =
+        error?.response?.data?.message || "";
 
-        if (
-          updatedMessages.at(-1)?.role === "assistant"
-        ) {
-          updatedMessages.pop();
-        }
+      if (errorMessage.includes("Quota exceeded")) {
 
-        return updatedMessages;
-      });
+        const match = errorMessage.match(
+          /Please retry in (\d+(\.\d+)?)s/
+        );
+
+        const retrySeconds = match
+          ? Math.ceil(Number(match[1]))
+          : null;
+
+        toast.error(
+          retrySeconds
+            ? `Bạn đã hết lượt sử dụng Gemini miễn phí. Vui lòng thử lại sau ${retrySeconds} giây.`
+            : "Bạn đã hết lượt sử dụng Gemini miễn phí. Vui lòng thử lại sau.",
+          {
+            duration: 6000,
+          }
+        );
+
+      } else {
+
+        toast.error(
+          "Không thể nhận phản hồi từ AI. Vui lòng thử lại sau."
+        );
+
+      }
 
     } finally {
 
       setIsGenerating(false);
-      inputRef.current?.focus();
 
     }
 
@@ -243,15 +231,9 @@ function Chat() {
         >
           {chatMessages.map((chat, index) =>
             <ChatItem
-              key={chat.id ?? `${chat.role}-${index}`}
+              content={chat.content}
               role={chat.role}
-              content={
-                isGenerating &&
-                  index === chatMessages.length - 1 &&
-                  chat.content === ""
-                  ? "Thinking..."
-                  : chat.content
-              }
+              key={index}
             />
           )}
         </Box>

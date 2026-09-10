@@ -28,7 +28,7 @@ export const checkAuthStatus = async () => {
 };
 
 export const sendChatRequest = async (message) => {
-  const res = await axios.post("/chat/new", {message});
+  const res = await axios.post("/chat/new", { message });
 
   return res.data;
 };
@@ -44,3 +44,81 @@ export const logoutUser = async () => {
 
   return res.data;
 };
+
+
+
+const API_BASE_URL = "http://localhost:5000/api/v1";
+
+export async function streamChatRequest(message, onTextDelta) {
+  const response = await fetch(`${API_BASE_URL}/chat/new`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message })
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+
+    throw new Error(
+      errorData?.message || "Unable to send message"
+    );
+  }
+
+  if (!response.body) {
+    throw new Error("Streaming is not supported by this browser");
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+
+  let buffer = "";
+
+  while (true) {
+    const { value, done } = await reader.read();
+
+    buffer += decoder.decode(value || new Uint8Array(), {
+      stream: !done
+    });
+
+    const lines = buffer.split("\n");
+
+    // The last entry may contain an incomplete JSON object.
+    buffer = lines.pop() || "";
+
+    for (const line of lines) {
+      if (!line.trim()) {
+        continue;
+      }
+
+      const event = JSON.parse(line);
+
+      if (event.type === "text_delta") {
+        onTextDelta(event.text);
+      }
+
+      if (event.type === "error") {
+        throw new Error(event.message);
+      }
+    }
+
+    if (done) {
+      break;
+    }
+  }
+
+  // Process a final line if the server didn't end it with "\n".
+  if (buffer.trim()) {
+    const event = JSON.parse(buffer);
+
+    if (event.type === "text_delta") {
+      onTextDelta(event.text);
+    }
+
+    if (event.type === "error") {
+      throw new Error(event.message);
+    }
+  }
+}
