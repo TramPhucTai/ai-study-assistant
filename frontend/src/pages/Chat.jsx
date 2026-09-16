@@ -1,298 +1,280 @@
-import { Box, Avatar, Typography, Button, IconButton } from '@mui/material';
-import { IoMdSend } from 'react-icons/io';
-import { red } from '@mui/material/colors';
+import { Box } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
-import ChatItem from '../components/chat/ChatItem';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { getUserChats, streamChatRequest } from '../helpers/api-communicator.js';
+import { useEffect, useState } from 'react';
+import { createConversation, deleteConversation, getUserConversations } from '../helpers/api-communicator.js';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router';
+import Sidebar from '../components/sidebar/Sidebar.jsx';
+import ChatMessagesContainer from '../components/chat/ChatMessagesContainer.jsx';
 
 
 
 function Chat() {
   const navigate = useNavigate();
 
-  const inputRef = useRef(null);
-
   const auth = useAuth();
 
-  const [chatMessages, setChatMessages] = useState([]);
+  const [conversations, setConversations] = useState([]);
+  const [activeConversationId, setActiveConversationId] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleSubmit = async () => {
-    if (isGenerating) return;
 
-    const content = inputRef.current?.value;
 
-    if (inputRef && inputRef.current) {
-      inputRef.current.value = '';
-    };
+  useEffect(() => {
+    if (!auth?.isLoggedIn || !auth?.user) return;
 
-    const userMessage = {
-      role: "user",
-      content
-    };
+    const loadConversations = async () => {
+      try {
+        toast.loading(
+          "Loading chats",
+          {
+            id: "loadchats"
+          }
+        );
 
-    const assistantPlaceholder = {
-      role: "assistant",
-      content: ""
-    };
+        const data = await getUserConversations();
 
-    /*
-     * Add both messages immediately.
-     * The last message will receive Gemini's text chunks.
-     */
-    setChatMessages((previous) => [
-      ...previous,
-      userMessage,
-      assistantPlaceholder
-    ]);
+        let loadedConversations = data.conversations;
 
-    setIsGenerating(true);
+        /*
+         * First-time user:
+         * automatically create one conversation.
+         */
+        if (loadedConversations.length === 0) {
+          const created = await createConversation();
 
-    try {
-
-      await streamChatRequest(content, (textDelta) => {
-        setChatMessages((previous) => {
-          const updatedMessages = [...previous];
-          const assistantIndex = updatedMessages.length - 1;
-
-          updatedMessages[assistantIndex] = {
-            ...updatedMessages[assistantIndex],
-            content:
-              updatedMessages[assistantIndex].content + textDelta
-          };
-
-          return updatedMessages;
-        });
-      });
-
-    } catch (error) {
-
-      toast.error(error.message);
-
-      /*
-       * Remove the empty/partially generated assistant message after failure.
-       * You could retain partial output instead if you prefer.
-       */
-      setChatMessages((previous) => {
-        const updatedMessages = [...previous];
-
-        if (
-          updatedMessages.at(-1)?.role === "assistant"
-        ) {
-          updatedMessages.pop();
+          loadedConversations = [
+            created.conversation
+          ];
         }
 
-        return updatedMessages;
-      });
+        setConversations(
+          loadedConversations
+        );
 
-    } finally {
+        setActiveConversationId(
+          loadedConversations[0]._id
+        );
 
-      setIsGenerating(false);
-      inputRef.current?.focus();
+        toast.success(
+          "Successfully loaded chats",
+          {
+            id: "loadchats"
+          }
+        );
 
+      } catch (error) {
+        console.error(error);
+
+        toast.error(
+          "Loading failed",
+          {
+            id: "loadchats"
+          }
+        );
+      }
+    };
+
+    loadConversations();
+
+  }, [auth?.isLoggedIn, auth?.user]);
+
+
+  // Protected route
+  useEffect(() => {
+    if (auth?.isLoading) {
+      return;
     }
 
+    if (!auth?.user) {
+      navigate("/login");
+    }
+
+  }, [auth?.isLoading, auth?.user, navigate]);
+
+
+  const handleSelectConversation = (conversationId) => {
+    if (isGenerating) {
+      return;
+    }
+
+    /*
+     * We no longer load messages here.
+     *
+     * ChatMessagesContainer watches activeConversationId
+     * and loads the messages itself.
+     */
+    setActiveConversationId(conversationId);
   };
 
-  // Fetch all chats of user on refresh
-  useLayoutEffect(() => {
-    if (auth?.isLoggedIn && auth.user) {
-      toast.loading("Loading chats", { id: "loadchats" });
-      getUserChats()
-        .then((data) => {
-          setChatMessages([...data.chats]);
-          toast.success("Successfully loaded chats", { id: "loadchats" })
-        })
-        .catch(error => {
-          console.log(error);
-          toast.error("Loading failed", { id: "loadchats" })
-        })
-    }
-  }, [auth]);
 
-  // Protected Routes and Logout user request
-  useEffect(() => {
-    if (!auth?.user) {
-      return navigate('/login')
+  const handleNewConversation = async () => {
+    if (isGenerating) {
+      return;
     }
-  }, [auth])
+
+    try {
+      const data = await createConversation();
+
+      const newConversation = data.conversation;
+
+      setConversations(
+        (previous) => [
+          newConversation,
+          ...previous
+        ]
+      );
+
+      /*
+       * Changing this ID causes
+       * ChatMessagesContainer to load the new conversation.
+       */
+      setActiveConversationId(
+        newConversation._id
+      );
+
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        "Không thể tạo cuộc trò chuyện"
+      );
+    }
+  };
+
+
+  const handleDeleteConversation = async (conversationIdToDelete) => {
+    if (!conversationIdToDelete || isGenerating) {
+      return;
+    }
+
+    try {
+      await deleteConversation(
+        conversationIdToDelete
+      );
+
+      const remaining = conversations.filter(
+        (conversation) =>
+          conversation._id !== conversationIdToDelete
+      );
+
+      /*
+       * Deleted conversation is not active.
+       */
+      if (
+        conversationIdToDelete !== activeConversationId
+      ) {
+        setConversations(remaining);
+        return;
+      }
+
+      /*
+       * Active conversation was deleted.
+       * Select another existing conversation.
+       */
+      if (remaining.length > 0) {
+        setConversations(remaining);
+
+        setActiveConversationId(
+          remaining[0]._id
+        );
+
+        return;
+      }
+
+      /*
+       * No conversations remain.
+       * Create one empty conversation.
+       */
+      const created = await createConversation();
+
+      setConversations([
+        created.conversation
+      ]);
+
+      setActiveConversationId(
+        created.conversation._id
+      );
+
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        "Không thể xóa cuộc trò chuyện"
+      );
+    }
+  };
+
+
+  const handleLogout = async () => {
+    try {
+      await auth.logout();
+
+      navigate("/login");
+
+      toast.success("Đăng xuất thành công");
+
+    } catch (error) {
+      console.error(error);
+
+      toast.error("Không thể đăng xuất");
+    }
+  };
+
+
+  /*
+   * Called by ChatMessagesContainer after sending
+   * the first message because the backend may have
+   * automatically changed the conversation title.
+   */
+  const handleConversationUpdated = async () => {
+    try {
+      const data = await getUserConversations();
+
+      setConversations(
+        data.conversations
+      );
+
+    } catch (error) {
+      console.error(
+        "Unable to refresh conversations:",
+        error
+      );
+    }
+  };
+
 
   return (
     <Box
       sx={{
-        display: 'flex',
-        flex: 1,
+        display: "flex",
         width: "100%",
-        height: "100%",
-        mt: 3,
-        gap: 3,
+        height: "calc(100vh - 67px)",
         minWidth: 0,
+        overflow: "hidden",
       }}
     >
-      <Box
-        sx={{
-          display: {
-            md: "flex",
-            xs: "none",
-            sm: "none"
-          },
-          flex: 0.2,
-          flexDirection: 'column'
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            height: "60vh",
-            bgcolor: "#2e2e51",
-            borderRadius: 5,
-            flexDirection: "column",
-            mx: (3),
-          }}
-        >
-          <Avatar
-            sx={{
-              mx: "auto",
-              my: (2),
-              bgcolor: "white",
-              color: "black",
-              fontWeight: 700
-            }}
-          >
-            {/* Display the first letter of both First and Last name */}
-            {auth?.user?.name[0]}
-            {auth?.user?.name.split(" ")[1][0]}
-          </Avatar>
-          <Typography
-            sx={{
-              mx: "auto",
-            }}
-          >
-            You are talking to a ChatBot
-          </Typography>
-          <Typography
-            sx={{
-              mx: "auto",
-              my: (4),
-              p: (3)
-            }}
-          >
-            Bạn có thể hỏi các câu liên quan đến kinh doanh, giáo dục, v.v. Nhưng đừng chia sẻ thông tin cá nhân
-          </Typography>
-          <Button
-            sx={{
-              width: "200px",
-              my: "auto",
-              color: "white",
-              fontWeight: "700",
-              borderRadius: 3,
-              mx: "auto",
-              bgcolor: red[300],
-              ":hover": {
-                bgcolor: red.A400
-              }
-            }}
-          >
-            Xóa cuộc trò chuyện
-          </Button>
-        </Box>
-      </Box>
+      {/* Sidebar */}
+      <Sidebar
+        conversations={conversations}
+        activeConversationId={activeConversationId}
+        isGenerating={isGenerating}
+        user={auth?.user}
+        onNewConversation={handleNewConversation}
+        onSelectConversation={handleSelectConversation}
+        onDeleteConversation={handleDeleteConversation}
+        onLogout={handleLogout}
+      />
 
-      <Box
-        sx={{
-          display: "flex",
-          flex: {
-            md: 0.8,
-            xs: 1,
-            sm: 1
-          },
-          flexDirection: "column",
-          px: 3,
-          minWidth: 0,
-        }}
-      >
-        <Typography
-          sx={{
-            fontSize: '40px',
-            color: "white",
-            mb: 2,
-            mx: "auto",
-            fontWeight: "600"
-          }}
-        >
-          Gemini 3.8 Flash
-        </Typography>
-
-        <Box
-          sx={{
-            width: "100%",
-            height: "60vh",
-            borderRadius: 3,
-            mx: "auto",
-            display: "flex",
-            flexDirection: "column",
-            overflowX: "hidden",
-            overflowY: "auto",
-            scrollBehavior: "smooth",
-            minWidth: 0,
-          }}
-        >
-          {chatMessages.map((chat, index) =>
-            <ChatItem
-              key={chat.id ?? `${chat.role}-${index}`}
-              role={chat.role}
-              content={
-                isGenerating &&
-                  index === chatMessages.length - 1 &&
-                  chat.content === ""
-                  ? "Thinking..."
-                  : chat.content
-              }
-            />
-          )}
-        </Box>
-
-        <div
-          style={{
-            width: "100%",
-            borderRadius: 8,
-            backgroundColor: "rgb(17, 27, 39)",
-            display: "flex",
-            margin: "auto",
-          }}
-        >
-          <input
-            ref={inputRef}
-            disabled={isGenerating}
-            type="text"
-            style={{
-              width: '100%',
-              backgroundColor: "transparent",
-              padding: "24px",
-              border: "none",
-              outline: "none",
-              color: "white",
-              fontSize: "20px",
-            }}
-          />
-          <IconButton
-            onClick={handleSubmit}
-            disabled={isGenerating}
-            sx={{
-              ml: "auto",
-              color: "white",
-            }}
-          >
-            <IoMdSend />
-          </IconButton>
-        </div>
-      </Box>
+      {/* Chat messages container */}
+      <ChatMessagesContainer
+        key={activeConversationId}
+        activeConversationId={activeConversationId}
+        onGeneratingChange={setIsGenerating}
+        onConversationUpdated={handleConversationUpdated}
+      />
     </Box>
-  )
+  );
 }
 
 export default Chat;

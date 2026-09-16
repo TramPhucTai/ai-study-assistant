@@ -2,7 +2,7 @@ import { Box, Avatar } from "@mui/material"
 import { useAuth } from "../../context/AuthContext"
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coldarkDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-
+import getInitials from "../../utils/get-initials";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -23,7 +23,7 @@ function ChatItem({ content, role }) {
             display: "flex",
             alignItems: "flex-start",
             p: 2,
-            bgcolor: "#004d5612",
+            bgcolor: "#00748112",
             my: 2,
             gap: 2,
             minWidth: 0,
@@ -83,7 +83,7 @@ function ChatItem({ content, role }) {
                     <Box
                       component="p"
                       sx={{
-                        fontSize: "20px",
+                        fontSize: "18px",
                         lineHeight: 1.6,
                         my: 1,
                       }}
@@ -98,7 +98,7 @@ function ChatItem({ content, role }) {
                     <Box
                       component="ul"
                       sx={{
-                        fontSize: "20px",
+                        fontSize: "18px",
                         lineHeight: 1.6,
                         my: 1,
                       }}
@@ -113,7 +113,7 @@ function ChatItem({ content, role }) {
                     <Box
                       component="ol"
                       sx={{
-                        fontSize: "20px",
+                        fontSize: "18px",
                         lineHeight: 1.6,
                         my: 1,
                       }}
@@ -128,7 +128,7 @@ function ChatItem({ content, role }) {
                     <Box
                       component="li"
                       sx={{
-                        fontSize: "20px",
+                        fontSize: "18px",
                         lineHeight: 1.6,
                       }}
                     >
@@ -213,13 +213,12 @@ function ChatItem({ content, role }) {
             }}
           >
             {/* Display the first letter of both First and Last name */}
-            {auth?.user?.name[0]}
-            {auth?.user?.name.split(" ")[1][0]}
+            {getInitials(auth?.user?.name)}
           </Avatar>
 
           <Box
             sx={{
-              fontSize: "20px",
+              fontSize: "18px",
               minWidth: 0,
               maxWidth: "100%",
               overflowWrap: "break-word",
@@ -234,7 +233,7 @@ function ChatItem({ content, role }) {
                     <Box
                       component="p"
                       sx={{
-                        fontSize: "20px",
+                        fontSize: "18px",
                         lineHeight: 1.6,
                         m: 0,
                       }}
