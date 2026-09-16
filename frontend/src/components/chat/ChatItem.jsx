@@ -18,6 +18,7 @@ function ChatItem({ content, role }) {
     <>
       {role === 'assistant' ? (
 
+        // Assistant
         <Box
           sx={{
             display: "flex",
@@ -192,6 +193,7 @@ function ChatItem({ content, role }) {
 
       ) : (
 
+        // User
         <Box
           sx={{
             display: "flex",
