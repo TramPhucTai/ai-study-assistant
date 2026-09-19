@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 import Sidebar from '../components/sidebar/Sidebar.jsx';
 import ChatMessagesContainer from '../components/chat/ChatMessagesContainer.jsx';
+import FileUpload from '../components/file/FileUpload.jsx';
 
 
 
@@ -34,27 +35,15 @@ function Chat() {
 
         const data = await getUserConversations();
 
-        let loadedConversations = data.conversations;
+        const loadedConversations = data.conversations;
 
-        /*
-         * First-time user:
-         * automatically create one conversation.
-         */
-        if (loadedConversations.length === 0) {
-          const created = await createConversation();
+        setConversations(loadedConversations);
 
-          loadedConversations = [
-            created.conversation
-          ];
+        if (loadedConversations.length > 0) {
+          setActiveConversationId(loadedConversations[0]._id);
+        } else {
+          setActiveConversationId(null);
         }
-
-        setConversations(
-          loadedConversations
-        );
-
-        setActiveConversationId(
-          loadedConversations[0]._id
-        );
 
         toast.success(
           "Successfully loaded chats",
@@ -108,39 +97,22 @@ function Chat() {
   };
 
 
-  const handleNewConversation = async () => {
+
+  const handleNewConversation = () => {
     if (isGenerating) {
       return;
     }
 
-    try {
-      const data = await createConversation();
-
-      const newConversation = data.conversation;
-
-      setConversations(
-        (previous) => [
-          newConversation,
-          ...previous
-        ]
-      );
-
-      /*
-       * Changing this ID causes
-       * ChatMessagesContainer to load the new conversation.
-       */
-      setActiveConversationId(
-        newConversation._id
-      );
-
-    } catch (error) {
-      console.error(error);
-
-      toast.error(
-        "Không thể tạo cuộc trò chuyện"
-      );
-    }
+    /*
+     * No conversation is created yet.
+     *
+     * This represents the "New document" screen.
+     * Later, after the PDF is uploaded,
+     * we can create the conversation.
+     */
+    setActiveConversationId(null);
   };
+
 
 
   const handleDeleteConversation = async (conversationIdToDelete) => {
@@ -254,6 +226,7 @@ function Chat() {
         overflow: "hidden",
       }}
     >
+
       {/* Sidebar */}
       <Sidebar
         conversations={conversations}
@@ -266,13 +239,18 @@ function Chat() {
         onLogout={handleLogout}
       />
 
-      {/* Chat messages container */}
-      <ChatMessagesContainer
-        key={activeConversationId}
-        activeConversationId={activeConversationId}
-        onGeneratingChange={setIsGenerating}
-        onConversationUpdated={handleConversationUpdated}
-      />
+      {/* Main content */}
+      {activeConversationId ? (
+        <ChatMessagesContainer
+          key={activeConversationId}
+          activeConversationId={activeConversationId}
+          onGeneratingChange={setIsGenerating}
+          onConversationUpdated={handleConversationUpdated}
+        />
+      ) : (
+        <FileUpload />
+      )}
+
     </Box>
   );
 }

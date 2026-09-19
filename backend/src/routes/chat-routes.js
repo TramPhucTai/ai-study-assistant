@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { verifyToken } from '../utils/token-manager.js'
 import { chatCompletionValidator, validate } from "../utils/validators.js";
-import { createConversation, getUserConversations, getConversation, deleteConversation, generateChatCompletion } from "../controllers/chat-controllers.js";
+import { generateChatCompletion } from "../controllers/chat-controllers.js";
+import { createConversation, getUserConversations, getConversation, deleteConversation} from "../controllers/conversation-controllers.js";
 
 
 

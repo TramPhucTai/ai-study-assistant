@@ -5,20 +5,7 @@ import { uploadDocument } from "../../helpers/api-communicator.js";
 
 
 
-function FileUpload({ onUploadSuccess }) {
-  const handleUpload = async (file) => {
-    try {
-      const data = await uploadDocument(file);
-
-      console.log("Upload document:", data);
-
-      onUploadSuccess(data);
-
-    } catch (error) {
-      console.error("Upload failed:", error);
-    }
-  };
-
+function FileUpload() {
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     // Make sure that users can only upload PDF files
     accept: { "application/pdf": [".pdf"] },
@@ -32,18 +19,27 @@ function FileUpload({ onUploadSuccess }) {
       if (acceptedFiles.length > 0) {
         const file = acceptedFiles[0];
 
-        // Reject file larger than 10 MB
+        // Reject file size larger than 10 MB
         if (file.size > 10 * 1024 * 1024) {
           alert('Vui lòng tải tệp PDF nhỏ hơn 10 MB');
           return;
         };
 
-        await handleUpload(file);
+        try {
+
+          const data = await uploadDocument(file);
+
+          console.log('Upload document:', data)
+
+        } catch (error) {
+
+          console.log('Upload failed:', error)
+          
+        }
+
       }
     }
   });
-
-
 
   return (
     <Box

@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 
 
@@ -34,4 +34,22 @@ export async function uploadToS3(file) {
     file_key: fileKey,
     file_name: originalName,
   };
+}
+
+export async function getFileFromS3(fileKey) {
+
+  const command = new GetObjectCommand({
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Key: fileKey
+  });
+
+  const response = await s3.send(command);
+
+  /*
+   * AWS SDK v3 can convert the S3 stream
+   * into a Uint8Array.
+   */
+  const bytes = await response.Body.transformToByteArray();
+
+  return Buffer.from(bytes);
 }

@@ -3,6 +3,7 @@ import User from "../models/User.js";
 import Conversation from "../models/Conversation.js";
 import { ai, geminiModel } from "../config/gemini-config.js";
 import { STUDY_ASSISTANT_SYSTEM_INSTRUCTION } from "../utils/constants.js";
+import { ensureGeminiFile } from '../lib/gemini-file-service.js';
 
 
 
@@ -68,7 +69,6 @@ export const generateChatCompletion = async (req, res) => {
       conversationId
     } = req.body;
 
-
     if (
       !message ||
       typeof message !== "string" ||
@@ -79,7 +79,6 @@ export const generateChatCompletion = async (req, res) => {
       });
     }
 
-
     if (
       !conversationId ||
       !mongoose.isValidObjectId(conversationId)
@@ -89,9 +88,7 @@ export const generateChatCompletion = async (req, res) => {
       });
     }
 
-
     const userId = res.locals.jwtData.id;
-
 
     /*
      * Find the conversation AND verify that
@@ -100,19 +97,25 @@ export const generateChatCompletion = async (req, res) => {
     const conversation = await Conversation.findOne({
       _id: conversationId,
       userId
-    });
+    }).populate("documentId");
 
-
-    if (!conversation) {
-      return res.status(404).json({
-        message: "Conversation not found"
+    if (!conversation.documentId) {
+      return res.status(400).json({
+        message:
+          "This conversation does not have a PDF document"
       });
     }
 
+    const document = await ensureGeminiFile(conversation.documentId);
+
+    const documentInput = {
+      type: "document",
+      uri: document.geminiFileUri,
+      mime_type: document.mimeType
+    };
 
     const userStep = {
       type: "user_input",
-
       content: [
         {
           type: "text",
@@ -121,42 +124,42 @@ export const generateChatCompletion = async (req, res) => {
       ]
     };
 
-
     /*
      * Only this conversation's Gemini history
      * will be sent back to Gemini.
      */
     const requestHistory = [
+      // Give Gemini the PDF first.
+      documentInput,
+
+      /*
+       * Previous Gemini interaction
+       * history for this conversation.
+       */
       ...conversation.geminiHistory.map((step) => {
+          if (typeof step.toObject === "function") {
+            return step.toObject();
+          }
 
-        if (typeof step.toObject === "function") {
-          return step.toObject();
+          return step;
         }
+      ),
 
-        return step;
-
-      }),
-
+      // Current user question
       userStep
     ];
-
 
     /*
      * This is basically your existing streaming code.
      */
     const stream = await ai.interactions.create({
       model: geminiModel,
-
       store: false,
-
       stream: true,
-
       input: requestHistory,
-
       system_instruction:
         STUDY_ASSISTANT_SYSTEM_INSTRUCTION
     });
-
 
     res.status(200);
 
@@ -182,15 +185,12 @@ export const generateChatCompletion = async (req, res) => {
 
     res.flushHeaders();
 
-
     const generatedSteps = [];
 
     let assistantResponse = "";
     let streamCompleted = false;
 
-
     for await (const event of stream) {
-
       /*
        * STEP START
        */
@@ -202,7 +202,6 @@ export const generateChatCompletion = async (req, res) => {
         continue;
 
       }
-
 
       /*
        * STEP DELTA
@@ -218,7 +217,6 @@ export const generateChatCompletion = async (req, res) => {
             `Received delta for unknown step index ${event.index}`
           );
         }
-
 
         applyDeltaToStep(
           currentStep,
@@ -449,7 +447,9 @@ export const createConversation = async (req, res) => {
     const userId = res.locals.jwtData.id;
 
     const conversation = await Conversation.create({
-      userId
+      userId,
+      documentId: document._id,
+      title: document.fileName
     });
 
     return res.status(201).json({

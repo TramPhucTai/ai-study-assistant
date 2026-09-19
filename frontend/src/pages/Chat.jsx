@@ -113,6 +113,24 @@ function Chat() {
     setActiveConversationId(null);
   };
 
+  const handleUploadSuccess = (data) => {
+    const newConversation = data.conversation;
+
+    if (!newConversation) {
+      console.error("Upload succeeded but no conversation was returned");
+      return;
+    }
+
+    // Add the newly created conversation to the sidebar
+    setConversations((previous) => [
+      newConversation,
+      ...previous,
+    ]);
+
+    // Open the new conversation immediately
+    setActiveConversationId(newConversation._id);
+  };
+
 
 
   const handleDeleteConversation = async (conversationIdToDelete) => {
@@ -248,7 +266,9 @@ function Chat() {
           onConversationUpdated={handleConversationUpdated}
         />
       ) : (
-        <FileUpload />
+        <FileUpload 
+          onUploadSuccess={handleUploadSuccess}
+        />
       )}
 
     </Box>
