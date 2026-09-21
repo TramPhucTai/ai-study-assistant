@@ -4,7 +4,7 @@ import './index.css'
 import { createTheme, ThemeProvider } from '@mui/material';
 import { BrowserRouter } from 'react-router';
 import App from './App.jsx'
-import { AuthProvider } from './context/AuthContext.jsx';
+import AuthProvider from './context/AuthProvider.jsx';
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
 

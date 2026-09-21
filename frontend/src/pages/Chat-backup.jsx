@@ -1,12 +1,14 @@
 import { Box } from '@mui/material';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth.js';
 import { useEffect, useState } from 'react';
-import { createConversation, deleteConversation, getUserConversations } from '../helpers/api-communicator.js';
+import { deleteConversation, getUserConversations } from '../helpers/api-communicator.js';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 import Sidebar from '../components/sidebar/Sidebar.jsx';
 import ChatMessagesContainer from '../components/chat/ChatMessagesContainer.jsx';
 import FileUpload from '../components/file/FileUpload.jsx';
+import DocumentHeader from '../components/chat/DocumentHeader.jsx';
+
 
 
 
@@ -19,7 +21,14 @@ function Chat() {
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-
+  /*
+   * Find the currently selected conversation.
+   * We can use this to display information such as
+   * the PDF filename in the document header.
+   */
+  const activeConversation = conversations.find((conversation) =>
+    conversation._id === activeConversationId
+  );
 
   useEffect(() => {
     if (!auth?.isLoggedIn || !auth?.user) return;
@@ -113,6 +122,24 @@ function Chat() {
     setActiveConversationId(null);
   };
 
+  const handleUploadSuccess = (data) => {
+    const newConversation = data.conversation;
+
+    if (!newConversation) {
+      console.error("Upload succeeded but no conversation was returned");
+      return;
+    }
+
+    // Add the newly created conversation to the sidebar
+    setConversations((previous) => [
+      newConversation,
+      ...previous,
+    ]);
+
+    // Open the new conversation immediately
+    setActiveConversationId(newConversation._id);
+  };
+
 
 
   const handleDeleteConversation = async (conversationIdToDelete) => {
@@ -156,17 +183,9 @@ function Chat() {
 
       /*
        * No conversations remain.
-       * Create one empty conversation.
        */
-      const created = await createConversation();
-
-      setConversations([
-        created.conversation
-      ]);
-
-      setActiveConversationId(
-        created.conversation._id
-      );
+      setConversations([]);
+      setActiveConversationId(null);
 
     } catch (error) {
       console.error(error);
@@ -178,18 +197,26 @@ function Chat() {
   };
 
 
+
   const handleLogout = async () => {
     try {
+
       await auth.logout();
 
-      navigate("/login");
+      navigate("/");
 
-      toast.success("Đăng xuất thành công");
+      toast.success(
+        "Đăng xuất thành công"
+      );
 
     } catch (error) {
+
       console.error(error);
 
-      toast.error("Không thể đăng xuất");
+      toast.error(
+        "Không thể đăng xuất"
+      );
+      
     }
   };
 
@@ -215,18 +242,34 @@ function Chat() {
     }
   };
 
+  // These will be implemented later
+  const handleSummarize = () => {
+    console.log(
+      "Summarize:",
+      activeConversationId
+    );
+  };
+
+
+  const handleCreateQuiz = () => {
+    console.log(
+      "Create quiz:",
+      activeConversationId
+    );
+  };
+
+
 
   return (
     <Box
       sx={{
         display: "flex",
         width: "100%",
-        height: "calc(100vh - 67px)",
-        minWidth: 0,
+        height: "100vh",
         overflow: "hidden",
+        bgcolor: "#1a1f2e",
       }}
     >
-
       {/* Sidebar */}
       <Sidebar
         conversations={conversations}
@@ -239,18 +282,58 @@ function Chat() {
         onLogout={handleLogout}
       />
 
-      {/* Main content */}
-      {activeConversationId ? (
-        <ChatMessagesContainer
-          key={activeConversationId}
-          activeConversationId={activeConversationId}
-          onGeneratingChange={setIsGenerating}
-          onConversationUpdated={handleConversationUpdated}
-        />
-      ) : (
-        <FileUpload />
-      )}
+      <Box
+        sx={{
+          flex: 1,
+          minWidth: 0,
+          minHeight: 0,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
+        {/* Main content */}
+        {activeConversationId ? (
+          <>
+            <DocumentHeader
+              conversation={activeConversation}
+              isGenerating={isGenerating}
+              onSummarize={handleSummarize}
+              onCreateQuiz={handleCreateQuiz}
+            />
 
+            {/* Chat */}
+            <Box
+              sx={{
+                flex: 1,
+                minHeight: 0,
+
+                display: "flex",
+                overflow: "hidden",
+              }}
+            >
+              <ChatMessagesContainer
+                key={
+                  activeConversationId
+                }
+                activeConversationId={
+                  activeConversationId
+                }
+                onGeneratingChange={
+                  setIsGenerating
+                }
+                onConversationUpdated={
+                  handleConversationUpdated
+                }
+              />
+            </Box>
+          </>
+        ) : (
+          <FileUpload
+            onUploadSuccess={handleUploadSuccess}
+          />
+        )}
+      </Box>
     </Box>
   );
 }

@@ -59,7 +59,7 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
   }, [activeConversationId]);
 
 
-  
+
   const handleSubmit = async () => {
     if (
       isGenerating ||
@@ -174,10 +174,13 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
       sx={{
         display: "flex",
         flex: 1,
+        width: "100%",
+        height: "100%",
         flexDirection: "column",
         minWidth: 0,
         minHeight: 0,
         bgcolor: "#1a1f2e",
+        overflow: "hidden",
       }}
     >
       {/* Chat messages */}
@@ -196,6 +199,7 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
           minHeight: 0,
           px: 2,
           py: 2,
+          boxSizing: "border-box"
         }}
       >
         {chatMessages.map(
@@ -231,7 +235,7 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
           sx={{
             width: "100%",
             minHeight: "70px",
-            bgcolor: "rgb(17, 27, 39)",
+            bgcolor: "#111b27",
             borderRadius: 2,
             display: "flex",
             alignItems: "center",

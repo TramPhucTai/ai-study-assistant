@@ -22,9 +22,21 @@ export const signupUser = async (name, email, password) => {
 };
 
 export const checkAuthStatus = async () => {
-  const res = await axios.get("/user/auth-status");
+  try {
 
-  return res.data;
+    const res = await axios.get("/user/auth-status");
+
+    return res.data;
+
+  } catch (error) {
+
+    if (error.response?.status === 401) {
+      return null;
+    }
+
+    throw error;
+    
+  }
 };
 
 export const sendChatRequest = async (message) => {

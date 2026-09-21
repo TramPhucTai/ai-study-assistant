@@ -2,7 +2,7 @@ import { Box, Typography, Button, IconButton, Menu, MenuItem, Avatar } from "@mu
 import { FiLogOut, FiPlusCircle, FiTrash2 } from "react-icons/fi";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import getInitials from "../../utils/get-initials.js";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/useAuth.js";
 import { useState } from "react";
 
 
