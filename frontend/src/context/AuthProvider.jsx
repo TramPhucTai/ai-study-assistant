@@ -1,12 +1,5 @@
 import { useEffect, useState } from "react";
-
-import {
-  checkAuthStatus,
-  loginUser,
-  logoutUser,
-  signupUser
-} from "../helpers/api-communicator.js";
-
+import { checkAuthStatus, loginUser, logoutUser, signupUser } from "../helpers/api-communicator.js";
 import { AuthContext } from "./AuthContext.js";
 
 

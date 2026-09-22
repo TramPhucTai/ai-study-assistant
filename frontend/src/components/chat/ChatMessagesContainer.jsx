@@ -1,13 +1,13 @@
 import { Box, IconButton } from "@mui/material";
 import { IoMdSend } from "react-icons/io";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { toast } from "react-hot-toast";
 import { getConversation, streamChatRequest } from "../../helpers/api-communicator.js";
 import ChatItem from "./ChatItem";
 
 
 
-function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onConversationUpdated }) {
+function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onConversationUpdated, quickAction, onQuickActionHandled }) {
   const inputRef = useRef(null);
 
   const [chatMessages, setChatMessages] = useState([]);
@@ -18,11 +18,123 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
    * state while also telling Chat.jsx that generation
    * is currently happening.
    */
-  const updateGeneratingState = (value) => {
-    setIsGenerating(value);
+  const updateGeneratingState = useCallback(
+    (value) => {
+      setIsGenerating(value);
 
-    onGeneratingChange?.(value);
-  };
+      onGeneratingChange?.(value);
+    },
+    [onGeneratingChange]
+  );
+
+  const sendMessage = useCallback(
+    async (content) => {
+      const trimmedContent =
+        content?.trim();
+
+      if (
+        isGenerating ||
+        !activeConversationId ||
+        !trimmedContent
+      ) {
+        return;
+      }
+
+      const userMessage = {
+        role: "user",
+        content: trimmedContent
+      };
+
+      const assistantPlaceholder = {
+        role: "assistant",
+        content: ""
+      };
+
+      /*
+       * Immediately display the user's
+       * message and an empty assistant
+       * placeholder.
+       */
+      setChatMessages((previous) => [
+        ...previous,
+        userMessage,
+        assistantPlaceholder
+      ]);
+
+      updateGeneratingState(true);
+
+      try {
+        await streamChatRequest(
+          activeConversationId,
+          trimmedContent,
+
+          (textDelta) => {
+            setChatMessages((previous) => {
+              const updatedMessages = [
+                ...previous
+              ];
+
+              const assistantIndex =
+                updatedMessages.length - 1;
+
+
+              updatedMessages[
+                assistantIndex
+              ] = {
+                ...updatedMessages[
+                assistantIndex
+                ],
+
+                content:
+                  updatedMessages[
+                    assistantIndex
+                  ].content +
+                  textDelta
+              };
+
+              return updatedMessages;
+            });
+          }
+        );
+
+        await onConversationUpdated?.();
+
+      } catch (error) {
+
+        console.error(error);
+
+        toast.error(
+          error.message ||
+          "Không thể tạo câu trả lời"
+        );
+
+        /*
+         * Remove the assistant placeholder
+         * if generation fails.
+         */
+        setChatMessages((previous) => {
+          const updatedMessages = [
+            ...previous
+          ];
+
+          if (
+            updatedMessages.at(-1)?.role ===
+            "assistant"
+          ) {
+            updatedMessages.pop();
+          }
+
+          return updatedMessages;
+        });
+
+      } finally {
+
+        updateGeneratingState(false);
+
+        inputRef.current?.focus();
+      }
+    }, [activeConversationId, isGenerating, onConversationUpdated, updateGeneratingState]
+  );
 
   /*
    * Whenever the user selects another conversation,
@@ -60,112 +172,41 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
 
 
 
+  useEffect(() => {
+    if (!quickAction || !quickAction.prompt) return;
+
+    const executeQuickAction = async () => {
+      try {
+
+        await sendMessage(
+          quickAction.prompt
+        );
+
+      } finally {
+
+        onQuickActionHandled?.();
+
+      }
+    };
+
+    executeQuickAction();
+
+  }, [quickAction, sendMessage, onQuickActionHandled]);
+
+
+
   const handleSubmit = async () => {
-    if (
-      isGenerating ||
-      !activeConversationId
-    ) {
-      return;
-    }
+    if (isGenerating || !activeConversationId) return;
 
-    const content =
-      inputRef.current?.value.trim();
+    const content = inputRef.current?.value.trim();
 
-    if (!content) {
-      return;
-    }
+    if (!content) return;
 
     if (inputRef.current) {
       inputRef.current.value = "";
     }
 
-    const userMessage = {
-      role: "user",
-      content
-    };
-
-    const assistantPlaceholder = {
-      role: "assistant",
-      content: ""
-    };
-
-    /*
-     * Show the user's message immediately,
-     * followed by an empty assistant message.
-     */
-    setChatMessages((previous) => [
-      ...previous,
-      userMessage,
-      assistantPlaceholder
-    ]);
-
-    updateGeneratingState(true);
-
-    try {
-      await streamChatRequest(
-        activeConversationId,
-        content,
-        (textDelta) => {
-          setChatMessages((previous) => {
-            const updatedMessages = [
-              ...previous
-            ];
-
-            const assistantIndex =
-              updatedMessages.length - 1;
-
-            updatedMessages[assistantIndex] = {
-              ...updatedMessages[assistantIndex],
-
-              content:
-                updatedMessages[assistantIndex].content +
-                textDelta
-            };
-
-            return updatedMessages;
-          });
-        }
-      );
-
-      /*
-       * Notify Chat.jsx that something about
-       * this conversation may have changed,
-       * particularly its automatically generated title.
-       */
-      await onConversationUpdated?.();
-
-    } catch (error) {
-      console.error(error);
-
-      toast.error(
-        error.message ||
-        "Không thể tạo câu trả lời"
-      );
-
-      /*
-       * Remove the assistant response if
-       * generation failed.
-       */
-      setChatMessages((previous) => {
-        const updatedMessages = [
-          ...previous
-        ];
-
-        if (
-          updatedMessages.at(-1)?.role ===
-          "assistant"
-        ) {
-          updatedMessages.pop();
-        }
-
-        return updatedMessages;
-      });
-
-    } finally {
-      updateGeneratingState(false);
-
-      inputRef.current?.focus();
-    }
+    await sendMessage(content);
   };
 
 

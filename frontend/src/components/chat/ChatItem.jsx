@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Box, Avatar } from "@mui/material"
 import { useAuth } from "../../context/useAuth.js"
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -54,11 +55,25 @@ function ChatItem({ content, role }) {
             }}
           >
             <ReactMarkdown
-              remarkPlugins={[remarkGfm, remarkMath]}
-              rehypePlugins={[rehypeKatex]}
+              remarkPlugins={[
+                remarkGfm,
+                remarkMath
+              ]}
+              rehypePlugins={[
+                [
+                  rehypeKatex,
+                  {
+                    strict: "ignore",
+                    throwOnError: false,
+                  }
+                ]
+              ]}
               components={{
                 code({ inline, className, children, ...props }) {
-                  const match = /language-(\w+)/.exec(className || "");
+                  const match =
+                    /language-(\w+)/.exec(
+                      className || ""
+                    );
 
                   return !inline && match ? (
                     <SyntaxHighlighter
@@ -67,7 +82,10 @@ function ChatItem({ content, role }) {
                       PreTag="div"
                       {...props}
                     >
-                      {String(children).replace(/\n$/, "")}
+                      {String(children).replace(
+                        /\n$/,
+                        ""
+                      )}
                     </SyntaxHighlighter>
                   ) : (
                     <code
@@ -199,7 +217,7 @@ function ChatItem({ content, role }) {
             display: "flex",
             alignItems: "flex-start",
             p: 2,
-            bgcolor: "#004d56",
+            bgcolor: "#075E68",
             gap: 2,
             borderRadius: 2,
             minWidth: 0,
@@ -256,4 +274,4 @@ function ChatItem({ content, role }) {
   )
 }
 
-export default ChatItem;
+export default memo(ChatItem);

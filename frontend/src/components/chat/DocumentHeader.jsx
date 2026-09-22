@@ -73,19 +73,19 @@ function DocumentHeader({ conversation, isGenerating, onSummarize, onCreateQuiz 
           sx={{
             height: "48px",
             px: 2.5,
-            bgcolor: "#51538f",
-            color: "white",
+            bgcolor: "#00E5FF",
+            color: "black",
             borderRadius: "7px",
             textTransform: "none",
             fontSize: "16px",
             fontWeight: 600,
 
             "&:hover": {
-              bgcolor: "#6265a3"
+              bgcolor: "white"
             },
 
             "&.Mui-disabled": {
-              bgcolor: "#3d3e60",
+              bgcolor: "#00e5ff33",
               color: "#888"
             }
           }}
@@ -105,19 +105,19 @@ function DocumentHeader({ conversation, isGenerating, onSummarize, onCreateQuiz 
           sx={{
             height: "48px",
             px: 2.5,
-            bgcolor: "#51538f",
-            color: "white",
+            bgcolor: "#00E5FF",
+            color: "black",
             borderRadius: "7px",
             textTransform: "none",
             fontSize: "16px",
             fontWeight: 600,
 
             "&:hover": {
-              bgcolor: "#6265a3"
+              bgcolor: "white"
             },
 
             "&.Mui-disabled": {
-              bgcolor: "#3d3e60",
+              bgcolor: "#00e5ff33",
               color: "#888"
             }
           }}

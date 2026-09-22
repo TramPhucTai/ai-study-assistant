@@ -1,5 +1,6 @@
 import './App.css';
 import { Routes, Route } from 'react-router';
+import { Box, CircularProgress } from "@mui/material";
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -11,6 +12,21 @@ import { useAuth } from "./context/useAuth.js";
 
 function App() {
   const auth = useAuth();
+
+  if (auth?.isLoading) {
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <main>

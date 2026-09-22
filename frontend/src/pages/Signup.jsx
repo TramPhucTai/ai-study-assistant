@@ -1,7 +1,7 @@
 import { Box, Typography, Button } from "@mui/material";
 import CustomizedInput from "../components/shared/CustomizedInput";
 import { IoIosLogIn } from "react-icons/io";
-import { toast } from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 import { useAuth } from "../context/useAuth.js";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -11,38 +11,35 @@ import { useNavigate } from "react-router";
 function Signup() {
   const navigate = useNavigate();
 
-  const auth = useAuth()
+  const auth = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
 
-    const name = formData.get('name');
+    const name = formData.get("name");
     const email = formData.get("email");
     const password = formData.get("password");
 
     try {
-
-      toast.loading('Signing Up', {id: 'signup'});
+      toast.loading("Signing Up", { id: "signup" });
 
       await auth?.signup(name, email, password);
 
-      toast.success('Signing Up Successfully', {id: 'signup'});
-
+      toast.success("Signing Up Successfully", { id: "signup" });
     } catch (error) {
-      
       console.log(error);
-      toast.error('Signing Up Failed', {id: 'signup'});
 
+      toast.error("Signing Up Failed", { id: "signup" });
     }
   };
 
   useEffect(() => {
     if (auth?.user) {
-      return navigate('/chat');
+      navigate("/chat");
     }
-  }, [auth])
+  }, [auth?.user, navigate]);
 
   return (
     <Box
@@ -70,7 +67,7 @@ function Signup() {
         />
       </Box>
 
-      {/* Right side - Login */}
+      {/* Right side - Signup */}
       <Box
         sx={{
           flex: 1,
@@ -110,6 +107,7 @@ function Signup() {
               name="email"
               label="Email"
             />
+
             <CustomizedInput
               type="password"
               name="password"
@@ -127,13 +125,52 @@ function Signup() {
                 bgcolor: "#00E5FF",
                 ":hover": {
                   bgcolor: "white",
-                  color: "black"
-                }
+                  color: "black",
+                },
               }}
               endIcon={<IoIosLogIn />}
             >
               Đăng ký
             </Button>
+
+            {/* Login section */}
+            <Box
+              sx={{
+                mt: 2,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "14px",
+                }}
+              >
+                Đã có tài khoản?
+              </Typography>
+
+              <Button
+                type="button"
+                onClick={() => navigate("/login")}
+                sx={{
+                  minWidth: "auto",
+                  p: 0,
+                  textTransform: "none",
+                  color: "#00E5FF",
+                  fontWeight: 600,
+                  fontSize: "14px",
+
+                  ":hover": {
+                    bgcolor: "transparent",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Đăng nhập tại đây
+              </Button>
+            </Box>
           </form>
         </Box>
       </Box>

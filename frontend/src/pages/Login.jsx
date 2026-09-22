@@ -127,6 +127,45 @@ function Login() {
             >
               Đăng Nhập
             </Button>
+
+            {/* Signup section */}
+            <Box
+              sx={{
+                mt: 2,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "14px",
+                }}
+              >
+                Chưa có tài khoản?
+              </Typography>
+
+              <Button
+                type="button"
+                onClick={() => navigate("/signup")}
+                sx={{
+                  minWidth: "auto",
+                  p: 0,
+                  textTransform: "none",
+                  color: "#00E5FF",
+                  fontWeight: 600,
+                  fontSize: "14px",
+
+                  ":hover": {
+                    bgcolor: "transparent",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Đăng ký tại đây
+              </Button>
+            </Box>
           </form>
         </Box>
       </Box>
