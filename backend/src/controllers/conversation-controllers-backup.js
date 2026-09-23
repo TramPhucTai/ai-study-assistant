@@ -27,17 +27,10 @@ export const createConversation =
         message: "OK",
 
         conversation: {
-          _id:
-            conversation._id,
-
-          title:
-            conversation.title,
-
-          createdAt:
-            conversation.createdAt,
-
-          updatedAt:
-            conversation.updatedAt
+          _id: conversation._id,
+          title: conversation.title,
+          createdAt: conversation.createdAt,
+          updatedAt: conversation.updatedAt
         }
 
       });

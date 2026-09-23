@@ -190,3 +190,11 @@ export const uploadDocument = async (file) => {
 
   return res.data;
 };
+
+export const getDocument = async (documentId) => {
+  const res = await axios.get(
+    `/documents/${documentId}`
+  );
+
+  return res.data;
+};

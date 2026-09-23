@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Chat from './pages/Chat';
+import Quiz from './pages/Quiz.jsx';
 import NotFound from './pages/NotFound';
 import { useAuth } from "./context/useAuth.js";
 
@@ -35,7 +36,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         {auth?.isLoggedIn && auth.user && (
-          <Route path="/chat" element={<Chat />} />
+          <>
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/quiz" element={<Quiz />} />
+          </>
         )}
         <Route path="*" element={<NotFound />} />
       </Routes>

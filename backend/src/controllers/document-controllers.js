@@ -48,6 +48,7 @@ export const uploadDocument = async (req, res) => {
       conversation: {
         _id: conversation._id,
         title: conversation.title,
+        documentId: conversation.documentId,
         createdAt: conversation.createdAt,
         updatedAt: conversation.updatedAt
       }
@@ -64,5 +65,51 @@ export const uploadDocument = async (req, res) => {
           : "Unable to upload document"
     });
 
+  }
+};
+
+
+
+export const getDocumentById = async (req, res) => {
+  try {
+    const userId =
+      res.locals.jwtData.id;
+
+    const { id } = req.params;
+
+    const document =
+      await Document.findOne({
+        _id: id,
+        userId,
+      });
+
+    if (!document) {
+      return res.status(404).json({
+        message: "Document not found",
+      });
+    }
+
+    return res.status(200).json({
+      document: {
+        _id: document._id,
+        fileName: document.fileName,
+        mimeType: document.mimeType,
+        createdAt: document.createdAt,
+        updatedAt: document.updatedAt,
+      },
+    });
+
+  } catch (error) {
+    console.error(
+      "getDocumentById error:",
+      error
+    );
+
+    return res.status(500).json({
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to get document",
+    });
   }
 };

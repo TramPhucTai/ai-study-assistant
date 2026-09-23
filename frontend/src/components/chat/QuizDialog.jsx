@@ -7,13 +7,9 @@ function QuizDialog({ open, onClose, onCreateQuiz }) {
   const [questionCount, setQuestionCount] = useState(5);
   const [difficulty, setDifficulty] = useState("Trung bình");
 
-
-
   const handleCreateQuiz = () => {
     onCreateQuiz({ questionCount, difficulty, });
   };
-
-
 
   return (
     <Dialog

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { verifyToken } from "../utils/token-manager.js";
 import multer from 'multer';
-import { uploadDocument } from "../controllers/document-controllers.js";
+import { uploadDocument, getDocumentById } from "../controllers/document-controllers.js";
 
 
 
@@ -28,6 +28,12 @@ documentRoutes.post(
   verifyToken,
   upload.single("file"),
   uploadDocument
+);
+
+documentRoutes.get(
+  "/:id",
+  verifyToken,
+  getDocumentById
 );
 
 export default documentRoutes;

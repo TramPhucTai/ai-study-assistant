@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { useAuth } from '../context/useAuth.js';
 import { useEffect, useState, useCallback } from 'react';
-import { deleteConversation, getUserConversations } from '../helpers/api-communicator.js';
+import { deleteConversation, getUserConversations, getDocument } from '../helpers/api-communicator.js';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 import Sidebar from '../components/sidebar/Sidebar.jsx';
@@ -32,6 +32,8 @@ function Chat() {
   const activeConversation = conversations.find((conversation) =>
     conversation._id === activeConversationId
   );
+
+  
 
   useEffect(() => {
     if (!auth?.isLoggedIn || !auth?.user) return;
@@ -266,22 +268,40 @@ function Chat() {
     setIsQuizDialogOpen(true);
   };
 
-  const handleConfirmCreateQuiz = ({ questionCount, difficulty, }) => {
-    console.log(
-      "Create quiz:",
-      {
-        conversationId: activeConversationId,
-        questionCount,
-        difficulty,
-      }
-    );
+  const handleConfirmCreateQuiz = async ({ questionCount, difficulty, }) => {
+    if (!activeConversation) return;
 
-    setIsQuizDialogOpen(false);
+    try {
 
-    /*
-     * Later we will call the backend here
-     * to ask Gemini to generate the quiz.
-     */
+      const data = await getDocument(
+        activeConversation.documentId
+      );
+
+      setIsQuizDialogOpen(false);
+
+      navigate("/quiz", {
+        state: {
+          conversationId: activeConversation._id,
+          documentId: activeConversation.documentId,
+          fileName: data.document.fileName,
+          questionCount,
+          difficulty,
+          conversations,
+        },
+      });
+
+    } catch (error) {
+
+      console.error(
+        "Unable to load document:",
+        error
+      );
+
+      toast.error(
+        "Không thể tải thông tin tài liệu"
+      );
+
+    }
   };
 
 
