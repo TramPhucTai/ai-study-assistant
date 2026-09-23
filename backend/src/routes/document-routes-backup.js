@@ -1,6 +1,7 @@
 import { Router } from "express";
+import { verifyToken } from "../utils/token-manager.js";
 import multer from 'multer';
-import { uploadToS3 } from "../lib/s3.js";
+import { uploadDocument } from "../controllers/document-controllers.js";
 
 
 
@@ -24,29 +25,9 @@ const upload = multer({
 
 documentRoutes.post(
   "/upload",
+  verifyToken,
   upload.single("file"),
-  async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({
-          message: "No file uploaded",
-        });
-      }
-
-      const result = await uploadToS3(req.file);
-
-      return res.status(201).json({
-        message: "File uploaded successfully",
-        document: result,
-      });
-    } catch (error) {
-      console.error(error);
-
-      return res.status(500).json({
-        message: "Failed to upload file",
-      });
-    }
-  }
+  uploadDocument
 );
 
 export default documentRoutes;

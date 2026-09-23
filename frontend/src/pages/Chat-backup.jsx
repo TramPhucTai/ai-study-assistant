@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { useAuth } from '../context/useAuth.js';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { deleteConversation, getUserConversations } from '../helpers/api-communicator.js';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router';
@@ -8,6 +8,7 @@ import Sidebar from '../components/sidebar/Sidebar.jsx';
 import ChatMessagesContainer from '../components/chat/ChatMessagesContainer.jsx';
 import FileUpload from '../components/file/FileUpload.jsx';
 import DocumentHeader from '../components/chat/DocumentHeader.jsx';
+import QuizDialog from '../components/chat/QuizDialog.jsx';
 
 
 
@@ -20,6 +21,8 @@ function Chat() {
   const [conversations, setConversations] = useState([]);
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [quickAction, setQuickAction] = useState(null);
+  const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
 
   /*
    * Find the currently selected conversation.
@@ -92,9 +95,7 @@ function Chat() {
 
 
   const handleSelectConversation = (conversationId) => {
-    if (isGenerating) {
-      return;
-    }
+    if (isGenerating) return;
 
     /*
      * We no longer load messages here.
@@ -102,15 +103,14 @@ function Chat() {
      * ChatMessagesContainer watches activeConversationId
      * and loads the messages itself.
      */
+    setQuickAction(null);
     setActiveConversationId(conversationId);
   };
 
 
 
   const handleNewConversation = () => {
-    if (isGenerating) {
-      return;
-    }
+    if (isGenerating) return;
 
     /*
      * No conversation is created yet.
@@ -119,6 +119,7 @@ function Chat() {
      * Later, after the PDF is uploaded,
      * we can create the conversation.
      */
+    setQuickAction(null);
     setActiveConversationId(null);
   };
 
@@ -216,7 +217,7 @@ function Chat() {
       toast.error(
         "Không thể đăng xuất"
       );
-      
+
     }
   };
 
@@ -242,20 +243,45 @@ function Chat() {
     }
   };
 
-  // These will be implemented later
+
+
   const handleSummarize = () => {
-    console.log(
-      "Summarize:",
-      activeConversationId
-    );
+    if (!activeConversationId || isGenerating) return;
+
+    setQuickAction({
+      id: Date.now(),
+      prompt:
+        "Hãy tóm tắt toàn bộ tài liệu này. Trình bày các nội dung chính một cách rõ ràng, có cấu trúc, dễ hiểu và làm nổi bật những kiến thức quan trọng mà sinh viên cần ghi nhớ.",
+    });
   };
+
+  const handleQuickActionHandled = useCallback(() => {
+    setQuickAction(null);
+  }, []);
 
 
   const handleCreateQuiz = () => {
+    if (!activeConversationId || isGenerating) return;
+
+    setIsQuizDialogOpen(true);
+  };
+
+  const handleConfirmCreateQuiz = ({ questionCount, difficulty, }) => {
     console.log(
       "Create quiz:",
-      activeConversationId
+      {
+        conversationId: activeConversationId,
+        questionCount,
+        difficulty,
+      }
     );
+
+    setIsQuizDialogOpen(false);
+
+    /*
+     * Later we will call the backend here
+     * to ask Gemini to generate the quiz.
+     */
   };
 
 
@@ -313,18 +339,12 @@ function Chat() {
               }}
             >
               <ChatMessagesContainer
-                key={
-                  activeConversationId
-                }
-                activeConversationId={
-                  activeConversationId
-                }
-                onGeneratingChange={
-                  setIsGenerating
-                }
-                onConversationUpdated={
-                  handleConversationUpdated
-                }
+                key={activeConversationId}
+                activeConversationId={activeConversationId}
+                onGeneratingChange={setIsGenerating}
+                onConversationUpdated={handleConversationUpdated}
+                quickAction={quickAction}
+                onQuickActionHandled={handleQuickActionHandled}
               />
             </Box>
           </>
@@ -334,6 +354,13 @@ function Chat() {
           />
         )}
       </Box>
+
+      {/* Create Quiz popup */}
+      <QuizDialog
+        open={isQuizDialogOpen}
+        onClose={() => setIsQuizDialogOpen(false)}
+        onCreateQuiz={handleConfirmCreateQuiz}
+      />
     </Box>
   );
 }

@@ -8,6 +8,7 @@ import Sidebar from '../components/sidebar/Sidebar.jsx';
 import ChatMessagesContainer from '../components/chat/ChatMessagesContainer.jsx';
 import FileUpload from '../components/file/FileUpload.jsx';
 import DocumentHeader from '../components/chat/DocumentHeader.jsx';
+import QuizDialog from '../components/chat/QuizDialog.jsx';
 
 
 
@@ -21,6 +22,7 @@ function Chat() {
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [quickAction, setQuickAction] = useState(null);
+  const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
 
   /*
    * Find the currently selected conversation.
@@ -259,10 +261,27 @@ function Chat() {
 
 
   const handleCreateQuiz = () => {
+    if (!activeConversationId || isGenerating) return;
+
+    setIsQuizDialogOpen(true);
+  };
+
+  const handleConfirmCreateQuiz = ({ questionCount, difficulty, }) => {
     console.log(
       "Create quiz:",
-      activeConversationId
+      {
+        conversationId: activeConversationId,
+        questionCount,
+        difficulty,
+      }
     );
+
+    setIsQuizDialogOpen(false);
+
+    /*
+     * Later we will call the backend here
+     * to ask Gemini to generate the quiz.
+     */
   };
 
 
@@ -335,6 +354,13 @@ function Chat() {
           />
         )}
       </Box>
+
+      {/* Create Quiz popup */}
+      <QuizDialog
+        open={isQuizDialogOpen}
+        onClose={() => setIsQuizDialogOpen(false)}
+        onCreateQuiz={handleConfirmCreateQuiz}
+      />
     </Box>
   );
 }

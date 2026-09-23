@@ -22,9 +22,21 @@ export const signupUser = async (name, email, password) => {
 };
 
 export const checkAuthStatus = async () => {
-  const res = await axios.get("/user/auth-status");
+  try {
 
-  return res.data;
+    const res = await axios.get("/user/auth-status");
+
+    return res.data;
+
+  } catch (error) {
+
+    if (error.response?.status === 401) {
+      return null;
+    }
+
+    throw error;
+    
+  }
 };
 
 export const sendChatRequest = async (message) => {
@@ -155,6 +167,25 @@ export const deleteConversation = async (
 
   const res = await axios.delete(
     `/chat/conversations/${conversationId}`
+  );
+
+  return res.data;
+};
+
+// Send the selected file to the backend API
+export const uploadDocument = async (file) => {
+  const formData = new FormData();
+
+  formData.append("file", file);
+
+  const res = await axios.post(
+    "/documents/upload",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
 
   return res.data;

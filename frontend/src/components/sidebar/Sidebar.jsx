@@ -220,7 +220,6 @@ function Sidebar({
             pt: 2
           }}
         >
-
           <Box
             sx={{
               display: "flex",
