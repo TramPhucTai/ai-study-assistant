@@ -6,6 +6,67 @@ import { useAuth } from "../context/useAuth.js";
 import { deleteConversation, getUserConversations } from "../helpers/api-communicator.js";
 import Sidebar from "../components/sidebar/Sidebar.jsx";
 import QuizHeader from "../components/quiz/QuizHeader.jsx";
+import QuizContent from "../components/quiz/QuizContent.jsx";
+
+
+
+const sampleQuestions = [
+  {
+    question:
+      "Trong mô hình cơ sở dữ liệu quan hệ, khóa chính có chức năng gì?",
+    options: [
+      "Xác định duy nhất một bản ghi trong bảng",
+      "Kết nối Internet với cơ sở dữ liệu",
+      "Mã hóa toàn bộ dữ liệu trong bảng",
+      "Xóa các bản ghi bị trùng",
+    ],
+    correctAnswer: 0,
+  },
+  {
+    question:
+      "SQL là viết tắt của cụm từ nào?",
+    options: [
+      "Structured Query Language",
+      "Simple Query Logic",
+      "System Question Language",
+      "Structured Queue Language",
+    ],
+    correctAnswer: 0,
+  },
+  {
+    question:
+      "Khóa ngoại được sử dụng chủ yếu để làm gì?",
+    options: [
+      "Tạo mật khẩu cho bảng",
+      "Thiết lập quan hệ giữa các bảng",
+      "Xóa dữ liệu tự động",
+      "Sắp xếp dữ liệu",
+    ],
+    correctAnswer: 1,
+  },
+  {
+    question:
+      "Lệnh SQL nào dùng để truy vấn dữ liệu?",
+    options: [
+      "INSERT",
+      "DELETE",
+      "SELECT",
+      "UPDATE",
+    ],
+    correctAnswer: 2,
+  },
+  {
+    question:
+      "Một hàng trong bảng cơ sở dữ liệu quan hệ còn được gọi là gì?",
+    options: [
+      "Attribute",
+      "Record",
+      "Database",
+      "Schema",
+    ],
+    correctAnswer: 1,
+  },
+];
 
 
 
@@ -23,6 +84,12 @@ function Quiz() {
     questionCount,
     difficulty,
   } = location.state || {};
+
+  const quizQuestions =
+    sampleQuestions.slice(
+      0,
+      Number(questionCount)
+    );
 
   const activeConversation = conversations.find((conversation) =>
     conversation._id === conversationId
@@ -224,48 +291,16 @@ function Quiz() {
         />
 
         {/* Quiz content */}
-        <Box
-          sx={{
-            flex: 1,
-            minHeight: 0,
-            overflowY: "auto",
-            px: 5,
-            py: 4,
-            bgcolor: "#1a1f2e",
-            color: "white",
+        <QuizContent
+          questions={quizQuestions}
+          difficulty={difficulty}
+          onFinish={(answers) => {
+            console.log(
+              "Submitted answers:",
+              answers
+            );
           }}
-        >
-          <Typography
-            variant="h4"
-            fontWeight={600}
-            sx={{
-              mb: 3,
-            }}
-          >
-            Quiz
-          </Typography>
-
-          <Typography
-            sx={{
-              mb: 1,
-            }}
-          >
-            Số câu hỏi: {questionCount}
-          </Typography>
-
-          <Typography>
-            Độ khó: {difficulty}
-          </Typography>
-
-          <Typography
-            sx={{
-              mt: 2,
-              color: "#9ca3af",
-            }}
-          >
-            Document ID: {documentId}
-          </Typography>
-        </Box>
+        />
       </Box>
     </Box>
   );
