@@ -198,3 +198,19 @@ export const getDocument = async (documentId) => {
 
   return res.data;
 };
+
+
+
+export async function generateQuiz({conversationId, questionCount, difficulty}) {
+  const response =
+    await axios.post(
+      "/quiz/generate",
+      {
+        conversationId,
+        questionCount,
+        difficulty,
+      }
+    );
+
+  return response.data;
+}

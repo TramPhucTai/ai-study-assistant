@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+// import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { createTheme, ThemeProvider } from '@mui/material';
@@ -25,14 +25,12 @@ const theme = createTheme({
 });
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <AuthProvider>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <Toaster position="top-right"/>
-          <App />
-        </ThemeProvider>
-      </BrowserRouter>
-    </AuthProvider>
-  </StrictMode>,
+  <AuthProvider>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <Toaster position="top-right" />
+        <App />
+      </ThemeProvider>
+    </BrowserRouter>
+  </AuthProvider>
 )

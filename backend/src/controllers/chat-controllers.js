@@ -3,8 +3,8 @@ import Conversation from "../models/Conversation.js";
 import Document from "../models/Document.js";
 import { ai, geminiModel } from "../config/gemini-config.js";
 import { STUDY_ASSISTANT_SYSTEM_INSTRUCTION } from "../utils/constants.js";
-import { attachPdfToGemini } from "../lib/gemini-file-service.js";
-import { ensureGeminiFile } from "../lib/gemini-file-service.js";
+import { attachPdfToGemini } from "../services/gemini-file-service.js";
+import { ensureGeminiFile } from "../services/gemini-file-service.js";
 
 
 

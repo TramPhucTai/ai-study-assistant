@@ -7,66 +7,7 @@ import { deleteConversation, getUserConversations } from "../helpers/api-communi
 import Sidebar from "../components/sidebar/Sidebar.jsx";
 import QuizHeader from "../components/quiz/QuizHeader.jsx";
 import QuizContent from "../components/quiz/QuizContent.jsx";
-
-
-
-const sampleQuestions = [
-  {
-    question:
-      "Trong mô hình cơ sở dữ liệu quan hệ, khóa chính có chức năng gì?",
-    options: [
-      "Xác định duy nhất một bản ghi trong bảng",
-      "Kết nối Internet với cơ sở dữ liệu",
-      "Mã hóa toàn bộ dữ liệu trong bảng",
-      "Xóa các bản ghi bị trùng",
-    ],
-    correctAnswer: 0,
-  },
-  {
-    question:
-      "SQL là viết tắt của cụm từ nào?",
-    options: [
-      "Structured Query Language",
-      "Simple Query Logic",
-      "System Question Language",
-      "Structured Queue Language",
-    ],
-    correctAnswer: 0,
-  },
-  {
-    question:
-      "Khóa ngoại được sử dụng chủ yếu để làm gì?",
-    options: [
-      "Tạo mật khẩu cho bảng",
-      "Thiết lập quan hệ giữa các bảng",
-      "Xóa dữ liệu tự động",
-      "Sắp xếp dữ liệu",
-    ],
-    correctAnswer: 1,
-  },
-  {
-    question:
-      "Lệnh SQL nào dùng để truy vấn dữ liệu?",
-    options: [
-      "INSERT",
-      "DELETE",
-      "SELECT",
-      "UPDATE",
-    ],
-    correctAnswer: 2,
-  },
-  {
-    question:
-      "Một hàng trong bảng cơ sở dữ liệu quan hệ còn được gọi là gì?",
-    options: [
-      "Attribute",
-      "Record",
-      "Database",
-      "Schema",
-    ],
-    correctAnswer: 1,
-  },
-];
+import { generateQuiz } from "../helpers/api-communicator.js";
 
 
 
@@ -78,18 +19,14 @@ function Quiz() {
 
   const [conversations, setConversations] = useState([]);
 
+  const [questions, setQuestions] = useState([]);
+  const [isLoadingQuiz, setIsLoadingQuiz] = useState(true);
+
   const {
     conversationId,
-    documentId,
     questionCount,
     difficulty,
   } = location.state || {};
-
-  const quizQuestions =
-    sampleQuestions.slice(
-      0,
-      Number(questionCount)
-    );
 
   const activeConversation = conversations.find((conversation) =>
     conversation._id === conversationId
@@ -131,6 +68,50 @@ function Quiz() {
     }
 
   }, [auth?.isLoading, auth?.user, navigate]);
+
+
+
+  useEffect(() => {
+    if (!conversationId || !questionCount || !difficulty) {
+      navigate("/chat");
+      return;
+    }
+
+    const loadQuiz = async () => {
+      try {
+        setIsLoadingQuiz(true);
+
+        const data = await generateQuiz({
+          conversationId,
+          questionCount,
+          difficulty,
+        });
+
+        setQuestions(data.questions);
+
+      } catch (error) {
+
+        console.error(
+          "Unable to generate quiz:",
+          error
+        );
+
+        toast.error(
+          "Không thể tạo quiz."
+        );
+
+        navigate("/chat");
+
+      } finally {
+        setIsLoadingQuiz(false);
+      }
+    };
+
+    loadQuiz();
+
+  }, [conversationId, questionCount, difficulty, navigate]);
+
+
 
   const handleBackToChat = () => {
     navigate("/chat", {
@@ -290,17 +271,35 @@ function Quiz() {
           onBackToChat={handleBackToChat}
         />
 
-        {/* Quiz content */}
-        <QuizContent
-          questions={quizQuestions}
-          difficulty={difficulty}
-          onFinish={(answers) => {
-            console.log(
-              "Submitted answers:",
-              answers
-            );
-          }}
-        />
+        {isLoadingQuiz ? (
+          <Box
+            sx={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography
+              sx={{
+                color: "white",
+                fontSize: "20px",
+              }}
+            >
+              Đang tạo câu hỏi từ tài liệu...
+            </Typography>
+          </Box>
+        ) : (
+          <>
+            {/* Quiz content */}
+            <QuizContent
+              questions={questions}
+              difficulty={difficulty}
+            />
+          </>
+        )}
+
+
       </Box>
     </Box>
   );

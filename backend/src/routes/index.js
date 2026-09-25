@@ -2,6 +2,7 @@ import { Router } from "express";
 import userRoutes from "./user-routes.js";
 import chatRoutes from "./chat-routes.js";
 import documentRoutes from "./document-routes.js";
+import quizRoutes from "./quiz-routes.js";
 
 
 
@@ -9,6 +10,7 @@ const appRouter = Router();
 
 appRouter.use('/user', userRoutes); // domain/api/v1/user
 appRouter.use('/chat', chatRoutes); // domain/api/v1/chat
-appRouter.use("/documents", documentRoutes); // domain/api/v1/documents
+appRouter.use('/documents', documentRoutes); // domain/api/v1/documents
+appRouter.use('/quiz', quizRoutes) // domain/api/v1/quiz
 
 export default appRouter;

@@ -1,7 +1,7 @@
 import Document from "../models/Document.js";
 import Conversation from "../models/Conversation.js";
-import { uploadToS3 } from "../lib/s3.js";
-import { attachPdfToGemini } from "../lib/gemini-file-service.js";
+import { uploadToS3 } from "../services/s3.js";
+import { attachPdfToGemini } from "../services/gemini-file-service.js";
 
 
 
