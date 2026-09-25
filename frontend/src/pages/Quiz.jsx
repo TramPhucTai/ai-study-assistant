@@ -8,6 +8,7 @@ import Sidebar from "../components/sidebar/Sidebar.jsx";
 import QuizHeader from "../components/quiz/QuizHeader.jsx";
 import QuizContent from "../components/quiz/QuizContent.jsx";
 import { generateQuiz } from "../helpers/api-communicator.js";
+import BackToChatDialog from "../components/quiz/BackToChatDialog.jsx";
 
 
 
@@ -21,6 +22,8 @@ function Quiz() {
 
   const [questions, setQuestions] = useState([]);
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(true);
+
+  const [isBackDialogOpen, setIsBackDialogOpen] = useState(false);
 
   const {
     conversationId,
@@ -114,6 +117,16 @@ function Quiz() {
 
 
   const handleBackToChat = () => {
+    setIsBackDialogOpen(true);
+  };
+
+  const handleCancelBackToChat = () => {
+    setIsBackDialogOpen(false);
+  };
+
+  const handleConfirmBackToChat = () => {
+    setIsBackDialogOpen(false);
+
     navigate("/chat", {
       state: {
         conversationId,
@@ -299,7 +312,11 @@ function Quiz() {
           </>
         )}
 
-
+        <BackToChatDialog
+          open={isBackDialogOpen}
+          onClose={handleCancelBackToChat}
+          onConfirm={handleConfirmBackToChat}
+        />
       </Box>
     </Box>
   );
