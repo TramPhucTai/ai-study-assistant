@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 
 
@@ -52,4 +52,15 @@ export async function getFileFromS3(fileKey) {
   const bytes = await response.Body.transformToByteArray();
 
   return Buffer.from(bytes);
+}
+
+export async function deleteFileFromS3(fileKey) {
+  const command = new DeleteObjectCommand({
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Key: fileKey,
+  });
+
+  const response = await s3.send(command);
+
+  return response;
 }

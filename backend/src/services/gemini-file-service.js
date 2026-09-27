@@ -142,3 +142,21 @@ export async function ensureGeminiFile(document) {
 
   return document;
 }
+
+
+
+export async function deleteGeminiFile(fileName) {
+  if (!fileName) return;
+
+  try {
+
+    await ai.files.delete({
+      name: fileName
+    });
+
+  } catch (error) {
+
+    console.error("Unable to delete Gemini file:", error);
+
+  }
+}
