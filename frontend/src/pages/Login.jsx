@@ -1,7 +1,7 @@
 import { Box, Typography, Button } from "@mui/material";
 import CustomizedInput from "../components/shared/CustomizedInput";
 import { IoIosLogIn } from "react-icons/io";
-import { toast } from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 import { useAuth } from "../context/useAuth.js";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -11,7 +11,7 @@ import { useNavigate } from "react-router";
 function Login() {
   const navigate = useNavigate();
 
-  const auth = useAuth()
+  const auth = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,68 +22,117 @@ function Login() {
     const password = formData.get("password");
 
     try {
-
-      toast.loading('Signing In', {id: 'login'});
+      toast.loading("Signing In", { id: "login" });
 
       await auth?.login(email, password);
 
-      toast.success('Signing In Successfully', {id: 'login'});
-
+      toast.success("Signing In Successfully", { id: "login" });
     } catch (error) {
-      
       console.log(error);
-      toast.error('Signing In Failed', {id: 'login'});
 
+      toast.error("Signing In Failed", { id: "login" });
     }
   };
 
   useEffect(() => {
     if (auth?.user) {
-      return navigate('/chat');
+      navigate("/chat");
     }
-  }, [auth])
+  }, [auth?.user, navigate]);
 
   return (
     <Box
       sx={{
         minHeight: "100vh",
         display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "relative",
+        px: 3,
+        boxSizing: "border-box",
       }}
     >
-      {/* Left side - Robot */}
+      {/* Logo */}
       <Box
+        onClick={() => navigate("/")}
         sx={{
-          flex: 1,
-          display: {
-            xs: "none",
-            md: "flex",
-          },
-          justifyContent: "center",
-          alignItems: "center",
+          position: "absolute",
+          top: 24,
+          left: 32,
+          cursor: "pointer",
+          zIndex: 10,
         }}
       >
-        <img
-          src="/robot.png"
-          alt="Robot"
-          style={{ width: "200px" }}
-        />
+        <Typography
+          sx={{
+            fontSize: {
+              xs: "28px",
+              md: "32px",
+            },
+            fontWeight: 700,
+            lineHeight: 1.1,
+            color: "white",
+            userSelect: "none",
+          }}
+        >
+          Luminous
+          <Box
+            component="span"
+            sx={{
+              color: "#00E5FF",
+            }}
+          >
+            PDF
+          </Box>
+        </Typography>
       </Box>
 
-      {/* Right side - Login */}
+      {/* Main content */}
       <Box
         sx={{
-          flex: 1,
+          width: "100%",
+          maxWidth: "1000px",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          gap: {
+            md: 8,
+            lg: 10,
+          },
         }}
       >
+        {/* Robot */}
+        <Box
+          sx={{
+            display: {
+              xs: "none",
+              md: "flex",
+            },
+            justifyContent: "center",
+            alignItems: "center",
+            width: "360px",
+            flexShrink: 0,
+          }}
+        >
+          <Box
+            component="img"
+            src="/robot.png"
+            alt="Robot"
+            sx={{
+              width: "280px",
+              height: "auto",
+            }}
+          />
+        </Box>
+
+        {/* Login box */}
         <Box
           sx={{
             width: "400px",
             padding: "30px",
             boxShadow: "10px 10px 20px #000",
             borderRadius: "10px",
+            flexShrink: 0,
           }}
         >
           <Typography
@@ -103,6 +152,7 @@ function Login() {
               name="email"
               label="Email"
             />
+
             <CustomizedInput
               type="password"
               name="password"
@@ -115,17 +165,18 @@ function Login() {
                 px: 2,
                 py: 1,
                 mt: 2,
-                width: "400px",
+                width: "100%",
                 borderRadius: 2,
+                color: "black",
                 bgcolor: "#00E5FF",
-                ":hover": {
+
+                "&:hover": {
                   bgcolor: "white",
-                  color: "black"
-                }
+                },
               }}
               endIcon={<IoIosLogIn />}
             >
-              Đăng Nhập
+              Đăng nhập
             </Button>
 
             {/* Signup section */}
@@ -157,7 +208,7 @@ function Login() {
                   fontWeight: 600,
                   fontSize: "14px",
 
-                  ":hover": {
+                  "&:hover": {
                     bgcolor: "transparent",
                     textDecoration: "underline",
                   },
@@ -172,71 +223,5 @@ function Login() {
     </Box>
   );
 }
-
-
-// function Login() {
-//   return (
-//     <Box
-//       width="100%"
-//       height="100%"
-//       display="flex"
-//     >
-//       <Box
-//         padding={8}
-//         mt={8}
-//         display={{ 
-//           md: "flex", 
-//           sm: "none", 
-//           xs: "none" 
-//         }}
-//       >
-//         <img
-//           src="robot.png"
-//           alt="Robot"
-//           style={{ width: "200px" }}
-//         />
-//       </Box>
-
-//       <Box
-//         display="flex"
-//         flex={{
-//           xs: 1,
-//           md: 0.5
-//         }}
-//         justifyContent="center"
-//         alignItems="center"
-//         padding={2}
-//         ml="auto"
-//         mt={16}
-//       >
-//         <form style={{
-//           margin: "auto",
-//           padding: "30px",
-//           boxShadow: "10px 10px 20px #000",
-//           borderRadius: "10x",
-//           border: "none"
-//           }}
-//         >
-//           <Box 
-//             sx={{
-//               display: 'flex', 
-//               flexDirection: "column", 
-//               justifyContent: "center"
-//             }}
-//           >
-//             <Typography
-//               variant="h4"
-//               textAlign="center"
-//               padding={2}
-//               fontWeight={600}
-//             >
-//               Login
-//             </Typography>
-//           </Box>
-//         </form>
-//       </Box>
-//     </Box>
-//   )
-// };
 
 export default Login;

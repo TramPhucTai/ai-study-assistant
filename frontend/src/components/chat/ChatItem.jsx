@@ -33,17 +33,22 @@ function ChatItem({ content, role }) {
           }}
         >
           <Avatar
+            src="/robot-profile.png"
+            alt="Robot"
             sx={{
-              ml: "0",
+              ml: 0,
               flexShrink: 0,
-              mt: "16px"
+              width: 48,
+              height: 48,
+              bgcolor: "transparent",
+
+              "& img": {
+                objectFit: "contain",
+                width: "100%",
+                height: "100%",
+              },
             }}
-          >
-            <img
-              src="robot-profile.png"
-              width={"30px"}
-            />
-          </Avatar>
+          />
 
           <Box
             sx={{
@@ -104,7 +109,8 @@ function ChatItem({ content, role }) {
                       sx={{
                         fontSize: "18px",
                         lineHeight: 1.6,
-                        my: 1,
+                        mt: 0,
+                        mb: 1,
                       }}
                     >
                       {children}
@@ -226,13 +232,14 @@ function ChatItem({ content, role }) {
         >
           <Avatar
             sx={{
-              ml: "0",
+              ml: 0,
               bgcolor: "black",
               color: "white",
               flexShrink: 0,
+              width: 48,
+              height: 48,
             }}
           >
-            {/* Display the first letter of both First and Last name */}
             {getInitials(auth?.user?.name)}
           </Avatar>
 

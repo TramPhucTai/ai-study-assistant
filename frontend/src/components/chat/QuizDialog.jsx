@@ -260,7 +260,7 @@ function QuizDialog({ open, onClose, onCreateQuiz }) {
               fontWeight: 500,
 
               "&:hover": {
-                bgcolor: "#111b27",
+                bgcolor: "#35375b",
               },
             }}
           >

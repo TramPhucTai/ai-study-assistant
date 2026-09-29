@@ -46,42 +46,94 @@ function Signup() {
       sx={{
         minHeight: "100vh",
         display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "relative",
+        px: 3,
+        boxSizing: "border-box",
       }}
     >
-      {/* Left side - Robot */}
+      {/* Logo */}
       <Box
+        onClick={() => navigate("/")}
         sx={{
-          flex: 1,
-          display: {
-            xs: "none",
-            md: "flex",
-          },
-          justifyContent: "center",
-          alignItems: "center",
+          position: "absolute",
+          top: 24,
+          left: 32,
+          cursor: "pointer",
+          zIndex: 10,
         }}
       >
-        <img
-          src="/robot.png"
-          alt="Robot"
-          style={{ width: "200px" }}
-        />
+        <Typography
+          sx={{
+            fontSize: {
+              xs: "28px",
+              md: "32px",
+            },
+            fontWeight: 700,
+            lineHeight: 1.1,
+            color: "white",
+            userSelect: "none",
+          }}
+        >
+          Luminous
+          <Box
+            component="span"
+            sx={{
+              color: "#00E5FF",
+            }}
+          >
+            PDF
+          </Box>
+        </Typography>
       </Box>
 
-      {/* Right side - Signup */}
+      {/* Main content */}
       <Box
         sx={{
-          flex: 1,
+          width: "100%",
+          maxWidth: "1000px",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          gap: {
+            md: 8,
+            lg: 10,
+          },
         }}
       >
+        {/* Robot */}
+        <Box
+          sx={{
+            display: {
+              xs: "none",
+              md: "flex",
+            },
+            justifyContent: "center",
+            alignItems: "center",
+            width: "360px",
+            flexShrink: 0,
+          }}
+        >
+          <Box
+            component="img"
+            src="/robot.png"
+            alt="Robot"
+            sx={{
+              width: "280px",
+              height: "auto",
+            }}
+          />
+        </Box>
+
+        {/* Signup box */}
         <Box
           sx={{
             width: "400px",
             padding: "30px",
             boxShadow: "10px 10px 20px #000",
             borderRadius: "10px",
+            flexShrink: 0,
           }}
         >
           <Typography
@@ -99,7 +151,7 @@ function Signup() {
             <CustomizedInput
               type="text"
               name="name"
-              label="Name"
+              label="Họ và tên"
             />
 
             <CustomizedInput
@@ -120,12 +172,13 @@ function Signup() {
                 px: 2,
                 py: 1,
                 mt: 2,
-                width: "400px",
+                width: "100%",
                 borderRadius: 2,
+                color: "black",
                 bgcolor: "#00E5FF",
-                ":hover": {
+
+                "&:hover": {
                   bgcolor: "white",
-                  color: "black",
                 },
               }}
               endIcon={<IoIosLogIn />}
@@ -162,7 +215,7 @@ function Signup() {
                   fontWeight: 600,
                   fontSize: "14px",
 
-                  ":hover": {
+                  "&:hover": {
                     bgcolor: "transparent",
                     textDecoration: "underline",
                   },

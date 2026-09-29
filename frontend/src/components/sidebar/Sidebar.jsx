@@ -233,13 +233,14 @@ function Sidebar({
             {/* Avatar */}
             <Avatar
               sx={{
-                ml: "0",
+                ml: 0,
                 bgcolor: "black",
                 color: "white",
                 flexShrink: 0,
+                width: 48,
+                height: 48,
               }}
             >
-              {/* Display the first letter of both First and Last name */}
               {getInitials(auth?.user?.name)}
             </Avatar>
 
@@ -324,8 +325,8 @@ function Sidebar({
               "15px"
           }}
         >
-          <FiTrash2 
-            size={19} 
+          <FiTrash2
+            size={19}
             style={{ marginRight: "8px" }}
           />
           Xóa cuộc trò chuyện

@@ -60,13 +60,25 @@ function FileUpload({ onUploadSuccess }) {
     >
       <Typography
         sx={{
+          fontSize: {
+            xs: "28px",
+            md: "32px",
+          },
+          fontWeight: 700,
+          lineHeight: 1.1,
           color: "white",
-          fontSize: "32px",
-          fontWeight: 500,
           mb: 6,
         }}
       >
-        StudyAI
+        Luminous
+        <Box
+          component="span"
+          sx={{
+            color: "#00E5FF",
+          }}
+        >
+          PDF
+        </Box>
       </Typography>
 
       <Box

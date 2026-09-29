@@ -117,7 +117,7 @@ function DocumentHeader({ conversation, isGenerating, onSummarize, onCreateQuiz 
             },
 
             "&.Mui-disabled": {
-              bgcolor: "#00e5ff33",
+              bgcolor: "#00e5ff11",
               color: "#888"
             }
           }}
