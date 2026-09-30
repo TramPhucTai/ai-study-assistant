@@ -309,22 +309,11 @@ export const generateChatCompletion = async (req, res) => {
      */
     const stream =
       await ai.interactions.create({
-
-        model:
-          geminiModel,
-
-        store:
-          false,
-
-        stream:
-          true,
-
-        input:
-          requestHistory,
-
-        system_instruction:
-          STUDY_ASSISTANT_SYSTEM_INSTRUCTION
-
+        model: geminiModel,
+        store: false,
+        stream: true,
+        input: requestHistory,
+        system_instruction: STUDY_ASSISTANT_SYSTEM_INSTRUCTION
       });
 
 

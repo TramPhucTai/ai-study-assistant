@@ -1,4 +1,4 @@
-import { ai } from "../config/gemini-config.js";
+import { ai, geminiModel } from "../config/gemini-config.js";
 import { ensureGeminiFile } from "./gemini-file-service.js";
 import { createQuizSchema } from "../schemas/quiz-schema.js";
 
@@ -64,7 +64,7 @@ export async function generateQuizFromDocument({ document, questionCount, diffic
 
   const interaction =
     await ai.interactions.create({
-      model: "gemini-3.8-flash",
+      model: geminiModel,
 
       input: [
         {

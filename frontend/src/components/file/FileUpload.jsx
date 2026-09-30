@@ -1,13 +1,21 @@
 import { Box, Typography } from "@mui/material";
 import { FiUpload } from "react-icons/fi";
-import { useDropzone } from 'react-dropzone'
+import { useDropzone } from "react-dropzone";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
 import { uploadDocument } from "../../helpers/api-communicator.js";
+import loadingSpinner from "../../assets/loading-spinner.gif";
 
 
 
 function FileUpload({ onUploadSuccess }) {
+  const [isUploading, setIsUploading] = useState(false);
+
+
   const handleUpload = async (file) => {
     try {
+      setIsUploading(true);
+
       const data = await uploadDocument(file);
 
       console.log("Upload document:", data);
@@ -16,31 +24,57 @@ function FileUpload({ onUploadSuccess }) {
 
     } catch (error) {
       console.error("Upload failed:", error);
+
+      toast.error(
+        error.response?.data?.message ||
+        "Không thể tải tài liệu lên"
+      );
+
+      setIsUploading(false);
     }
   };
 
-  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
+
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    isDragReject,
+  } = useDropzone({
     // Make sure that users can only upload PDF files
-    accept: { "application/pdf": [".pdf"] },
+    accept: {
+      "application/pdf": [".pdf"],
+    },
 
     // Can only upload one file at a time
     multiple: false,
 
+    // Disable dropzone while backend is processing
+    disabled: isUploading,
+
     onDrop: async (acceptedFiles, rejectedFiles) => {
-      if (rejectedFiles.length > 0) return;
+      if (isUploading) return;
+
+      if (rejectedFiles.length > 0) {
+        toast.error("Vui lòng chọn tệp PDF");
+        return;
+      }
 
       if (acceptedFiles.length > 0) {
         const file = acceptedFiles[0];
 
         // Reject file larger than 10 MB
         if (file.size > 10 * 1024 * 1024) {
-          alert('Vui lòng tải tệp PDF nhỏ hơn 10 MB');
+          toast.error(
+            "Vui lòng tải tệp PDF nhỏ hơn 10 MB"
+          );
+
           return;
-        };
+        }
 
         await handleUpload(file);
       }
-    }
+    },
   });
 
 
@@ -71,6 +105,7 @@ function FileUpload({ onUploadSuccess }) {
         }}
       >
         Luminous
+
         <Box
           component="span"
           sx={{
@@ -81,70 +116,127 @@ function FileUpload({ onUploadSuccess }) {
         </Box>
       </Typography>
 
-      <Box
-        {...getRootProps()}
-        sx={{
-          width: "100%",
-          maxWidth: "520px",
-          minHeight: "180px",
 
-          border: "2px dashed",
-          borderColor: isDragReject
-            ? "#ef4444"
-            : "#9ca3af",
-
-          borderRadius: 3,
-
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-
-          bgcolor:
-            isDragActive && !isDragReject
-              ? "#51538f"
-              : "transparent",
-
-          cursor: "pointer",
-
-          transition: "0.2s",
-
-          "&:hover": {
-            bgcolor: isDragReject
-              ? "transparent"
-              : "#51538f",
-          },
-        }}
-      >
-        <input {...getInputProps()} />
-
-        <FiUpload
-          size={32}
-          color="#d1d5db"
-        />
-
-        <Typography
+      {isUploading ? (
+        // Loading screen
+        <Box
           sx={{
-            color: "white",
-            fontSize: "20px",
-            mt: 2,
+            width: "100%",
+            maxWidth: "520px",
+            minHeight: "180px",
+
+            border: "2px dashed #9ca3af",
+            borderRadius: 3,
+
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+
+            px: 3,
           }}
         >
-          {isDragActive
-            ? "Thả tệp PDF vào đây"
-            : "Kéo và thả tệp PDF vào đây để bắt đầu"}
-        </Typography>
+          <Box
+            component="img"
+            src={loadingSpinner}
+            alt="Loading"
+            sx={{
+              width: "72px",
+              height: "72px",
+              objectFit: "contain",
+            }}
+          />
 
-        <Typography
+          <Typography
+            sx={{
+              color: "white",
+              fontSize: "20px",
+              fontWeight: 600,
+              mt: 3,
+            }}
+          >
+            Vui lòng chờ...
+          </Typography>
+
+          <Typography
+            sx={{
+              color: "#9ca3af",
+              fontSize: "16px",
+              mt: 1,
+              textAlign: "center",
+            }}
+          >
+            Tài liệu đang được tải lên và xử lý
+          </Typography>
+        </Box>
+      ) : (
+        // Upload dropzone
+        <Box
+          {...getRootProps()}
           sx={{
-            color: "#9ca3af",
-            fontSize: "16px",
-            mt: 1,
+            width: "100%",
+            maxWidth: "520px",
+            minHeight: "180px",
+
+            border: "2px dashed",
+
+            borderColor: isDragReject
+              ? "#ef4444"
+              : "#9ca3af",
+
+            borderRadius: 3,
+
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+
+            bgcolor:
+              isDragActive && !isDragReject
+                ? "#51538f"
+                : "transparent",
+
+            cursor: "pointer",
+
+            transition: "0.2s",
+
+            "&:hover": {
+              bgcolor: isDragReject
+                ? "transparent"
+                : "#51538f",
+            },
           }}
         >
-          hoặc nhấn để chọn tệp
-        </Typography>
-      </Box>
+          <input {...getInputProps()} />
+
+          <FiUpload
+            size={32}
+            color="#d1d5db"
+          />
+
+          <Typography
+            sx={{
+              color: "white",
+              fontSize: "20px",
+              mt: 2,
+            }}
+          >
+            {isDragActive
+              ? "Thả tệp PDF vào đây"
+              : "Kéo và thả tệp PDF vào đây để bắt đầu"}
+          </Typography>
+
+          <Typography
+            sx={{
+              color: "#9ca3af",
+              fontSize: "16px",
+              mt: 1,
+            }}
+          >
+            hoặc nhấn để chọn tệp
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 }

@@ -1,17 +1,8 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Dialog, Typography } from "@mui/material";
 
 
 
-function BackToChatDialog({
-  open,
-  onClose,
-  onConfirm,
-}) {
+function BackToChatDialog({ open, onClose, onConfirm }) {
   return (
     <Dialog
       open={open}
@@ -90,7 +81,7 @@ function BackToChatDialog({
               fontWeight: 500,
 
               "&:hover": {
-                bgcolor: "#111b27",
+                bgcolor: "#35375b",
               },
             }}
           >
@@ -103,7 +94,7 @@ function BackToChatDialog({
             sx={{
               height: "56px",
               bgcolor: "#00E5FF",
-              color: "#000000",
+              color: "black",
               borderRadius: "10px",
               textTransform: "none",
               fontSize: "18px",

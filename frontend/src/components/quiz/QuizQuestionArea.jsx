@@ -1,13 +1,5 @@
-import {
-  Box,
-  Button,
-  Typography,
-} from "@mui/material";
-
-import {
-  FiArrowLeft,
-  FiArrowRight,
-} from "react-icons/fi";
+import { Box, Button, Typography } from "@mui/material";
+import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 
 
 
@@ -32,8 +24,6 @@ function QuizQuestionArea({
     const isCorrect =
       currentQuestion.correctAnswer ===
       answerIndex;
-
-
 
     /*
      * Normal answering mode

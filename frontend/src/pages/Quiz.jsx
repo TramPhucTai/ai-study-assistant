@@ -9,6 +9,7 @@ import QuizHeader from "../components/quiz/QuizHeader.jsx";
 import QuizContent from "../components/quiz/QuizContent.jsx";
 import { generateQuiz } from "../helpers/api-communicator.js";
 import BackToChatDialog from "../components/quiz/BackToChatDialog.jsx";
+import loadingSpinner from "../assets/loading-spinner.gif";
 
 
 
@@ -289,14 +290,28 @@ function Quiz() {
             sx={{
               flex: 1,
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
+            <Box
+              component="img"
+              src={loadingSpinner}
+              alt="Đang tạo quiz"
+              sx={{
+                width: "72px",
+                height: "72px",
+                objectFit: "contain",
+                mb: 3,
+              }}
+            />
+
             <Typography
               sx={{
                 color: "white",
                 fontSize: "20px",
+                fontWeight: 500,
               }}
             >
               Đang tạo câu hỏi từ tài liệu...

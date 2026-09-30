@@ -3,6 +3,7 @@ import { IoMdSend } from "react-icons/io";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { toast } from "react-hot-toast";
 import { getConversation, streamChatRequest } from "../../helpers/api-communicator.js";
+import loadingSpinner from "../../assets/loading-spinner.gif";
 import ChatItem from "./ChatItem";
 
 
@@ -243,25 +244,49 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
           boxSizing: "border-box"
         }}
       >
-        {chatMessages.map(
-          (chat, index) => (
+        {chatMessages.map((chat, index) => {
+          const isThinking =
+            isGenerating &&
+            index === chatMessages.length - 1 &&
+            chat.role === "assistant" &&
+            chat.content === "";
+
+          if (isThinking) {
+            return (
+              <Box
+                key={`loading-${index}`}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  px: 2,
+                  py: 1,
+                }}
+              >
+                <Box
+                  component="img"
+                  src={loadingSpinner}
+                  alt="Đang tạo câu trả lời"
+                  sx={{
+                    width: "52px",
+                    height: "52px",
+                    objectFit: "contain",
+                  }}
+                />
+              </Box>
+            );
+          }
+
+          return (
             <ChatItem
               key={
                 chat.id ??
                 `${chat.role}-${index}`
               }
               role={chat.role}
-              content={
-                isGenerating &&
-                  index ===
-                  chatMessages.length - 1 &&
-                  chat.content === ""
-                  ? "Thinking..."
-                  : chat.content
-              }
+              content={chat.content}
             />
-          )
-        )}
+          );
+        })}
       </Box>
 
       {/* Chat input */}
