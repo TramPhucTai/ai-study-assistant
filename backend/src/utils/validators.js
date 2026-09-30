@@ -4,10 +4,6 @@ export const validate = (validations) => {
   return async (req, res, next) => {
     for (let validation of validations) {
       const result = await validation.run(req);
-      
-      if (!result.isEmpty()) {
-        break;
-      }
     }
 
     const errors = validationResult(req);
@@ -24,15 +20,20 @@ export const validate = (validations) => {
 
 export const loginValidator = [
 
-  body('email')
+  body("email")
     .trim()
+    .notEmpty()
+    .withMessage("Vui lòng nhập email")
+    .bail()
     .isEmail()
-    .withMessage('Email is required'),
+    .withMessage("Email không đúng định dạng"),
 
-  body('password')
-    .trim()
+  body("password")
+    .notEmpty()
+    .withMessage("Vui lòng nhập mật khẩu")
+    .bail()
     .isLength({ min: 6 })
-    .withMessage('Password should contain at least 6 characters')
+    .withMessage("Mật khẩu phải có ít nhất 6 ký tự"),
 
 ];
 
@@ -40,7 +41,7 @@ export const signupValidator = [
 
   body('name')
     .notEmpty()
-    .withMessage('Name is required'),
+    .withMessage('Vui lòng nhập họ và tên'),
 
   ...loginValidator,
 
@@ -50,6 +51,6 @@ export const chatCompletionValidator = [
 
   body('message')
     .notEmpty()
-    .withMessage('Message is required'),
+    .withMessage('Vui lòng nhập nội dung tin nhắn'),
 
 ];

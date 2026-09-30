@@ -23,15 +23,30 @@ function Signup() {
     const password = formData.get("password");
 
     try {
-      toast.loading("Signing Up", { id: "signup" });
+      toast.loading("Đang tạo tài khoản...", { id: "signup" });
 
       await auth?.signup(name, email, password);
 
-      toast.success("Signing Up Successfully", { id: "signup" });
+      toast.success("Tạo tài khoản thành công!", { id: "signup" });
+
     } catch (error) {
+      
       console.log(error);
 
-      toast.error("Signing Up Failed", { id: "signup" });
+      const validationErrors = error.response?.data?.errors;
+
+      if (validationErrors && validationErrors.length > 0) {
+        toast.error(validationErrors[0].msg, {
+          id: "signup",
+        });
+
+        return;
+      }
+
+      toast.error("Đăng ký thất bại. Vui lòng thử lại.", {
+        id: "signup",
+      });
+
     }
   };
 
