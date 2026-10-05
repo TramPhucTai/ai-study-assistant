@@ -100,9 +100,11 @@ function Quiz() {
           error
         );
 
-        toast.error(
-          "Không thể tạo quiz."
-        );
+        const errorMessage =
+          error.response?.data?.message ||
+          "Không thể tạo quiz. Vui lòng thử lại.";
+
+        toast.error(errorMessage);
 
         navigate("/chat");
 

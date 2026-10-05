@@ -41,7 +41,7 @@ function Chat() {
     const loadConversations = async () => {
       try {
         toast.loading(
-          "Loading chats",
+          "Đang tải các cuộc trò chuyện...",
           {
             id: "loadchats"
           }
@@ -60,7 +60,7 @@ function Chat() {
         }
 
         toast.success(
-          "Successfully loaded chats",
+          "Tải các cuộc trò chuyện thành công",
           {
             id: "loadchats"
           }
@@ -70,7 +70,7 @@ function Chat() {
         console.error(error);
 
         toast.error(
-          "Loading failed",
+          "Không thể tải các cuộc trò chuyện",
           {
             id: "loadchats"
           }

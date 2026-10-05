@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import QuizQuestionArea from "./QuizQuestionArea.jsx";
 import QuizQuestionList from "./QuizQuestionList.jsx";
 
@@ -297,7 +297,7 @@ function QuizContent({
           }
           selectedAnswer={
             selectedAnswers[
-              currentQuestionIndex
+            currentQuestionIndex
             ]
           }
           isFinished={
@@ -341,6 +341,83 @@ function QuizContent({
             handleFinishQuiz
           }
         />
+      </Box>
+
+      {/* Mobile quiz footer */}
+      <Box
+        sx={{
+          display: {
+            xs: "block",
+            lg: "none",
+          },
+          mt: 3,
+          pb: 2,
+        }}
+      >
+        {!isFinished ? (
+          <>
+            <Typography
+              sx={{
+                mb: 1.5,
+                color: "#94a3b8",
+                fontSize: "14px",
+                textAlign: "center",
+              }}
+            >
+              Đã trả lời {answeredCount}/{totalQuestions} câu
+            </Typography>
+
+            <Button
+              fullWidth
+              onClick={handleFinishQuiz}
+              sx={{
+                py: 1.3,
+                bgcolor: "#00E5FF",
+                color: "black",
+                textTransform: "none",
+                fontWeight: 700,
+                fontSize: "16px",
+                borderRadius: "8px",
+
+                "&:hover": {
+                  bgcolor: "white",
+                },
+              }}
+            >
+              Hoàn thành
+            </Button>
+          </>
+        ) : (
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: "#272f42",
+              border: "1px solid #354158",
+              borderRadius: "10px",
+              textAlign: "center",
+            }}
+          >
+            <Typography
+              sx={{
+                color: "#94a3b8",
+                fontSize: "14px",
+                mb: 0.5,
+              }}
+            >
+              Kết quả
+            </Typography>
+
+            <Typography
+              sx={{
+                fontSize: "20px",
+                fontWeight: 700,
+                color: "#22c55e",
+              }}
+            >
+              {correctCount}/{totalQuestions} câu đúng
+            </Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   );

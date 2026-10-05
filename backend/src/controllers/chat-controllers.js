@@ -80,6 +80,11 @@ export const generateChatCompletion = async (req, res) => {
       conversationId
     } = req.body;
 
+    console.log(
+      "Gemini request:",
+      new Date().toISOString()
+    );
+
 
     if (
       !message ||
@@ -594,10 +599,26 @@ export const generateChatCompletion = async (req, res) => {
 
   } catch (error) {
 
-    console.error(
-      "generateChatCompletion error:",
-      error
-    );
+    console.error("generateChatCompletion error:", error);
+
+    if (error.status === 429 || error.statusCode === 429) {
+      return res.status(429).json({
+        message:
+          "Hệ thống AI đang nhận quá nhiều yêu cầu. Vui lòng thử lại sau ít phút.",
+      });
+    }
+
+    if (error.status === 503 || error.statusCode === 503) {
+      return res.status(503).json({
+        message:
+          "Dịch vụ AI hiện đang quá tải. Vui lòng thử lại sau.",
+      });
+    }
+
+    return res.status(500).json({
+      message:
+        "Đã xảy ra lỗi khi xử lý yêu cầu.",
+    });
 
 
     if (!res.headersSent) {

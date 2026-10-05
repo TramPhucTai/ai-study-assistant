@@ -53,10 +53,20 @@ function ChatItem({ content, role }) {
           <Box
             sx={{
               minWidth: 0,
+              width: "100%",
               maxWidth: "100%",
-              overflowX: "auto",
               overflowWrap: "break-word",
               wordBreak: "break-word",
+
+              "& .katex-display": {
+                overflowX: "auto",
+                overflowY: "hidden",
+                py: 1,
+              },
+
+              "& .katex-display > .katex": {
+                whiteSpace: "nowrap",
+              },
             }}
           >
             <ReactMarkdown
@@ -102,6 +112,51 @@ function ChatItem({ content, role }) {
                   );
                 },
 
+                h1({ children }) {
+                  return (
+                    <Box
+                      component="h1"
+                      sx={{
+                        fontSize: "28px",
+                        mt: 2,
+                        mb: 1.5,
+                      }}
+                    >
+                      {children}
+                    </Box>
+                  );
+                },
+
+                h2({ children }) {
+                  return (
+                    <Box
+                      component="h2"
+                      sx={{
+                        fontSize: "24px",
+                        mt: 2,
+                        mb: 1.5,
+                      }}
+                    >
+                      {children}
+                    </Box>
+                  );
+                },
+
+                h3({ children }) {
+                  return (
+                    <Box
+                      component="h3"
+                      sx={{
+                        fontSize: "21px",
+                        mt: 2,
+                        mb: 1,
+                      }}
+                    >
+                      {children}
+                    </Box>
+                  );
+                },
+
                 p({ children }) {
                   return (
                     <Box
@@ -126,6 +181,7 @@ function ChatItem({ content, role }) {
                         fontSize: "18px",
                         lineHeight: 1.6,
                         my: 1,
+                        pl: 4,
                       }}
                     >
                       {children}
@@ -141,6 +197,7 @@ function ChatItem({ content, role }) {
                         fontSize: "18px",
                         lineHeight: 1.6,
                         my: 1,
+                        pl: 4,
                       }}
                     >
                       {children}

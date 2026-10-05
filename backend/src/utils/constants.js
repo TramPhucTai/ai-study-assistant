@@ -15,48 +15,43 @@ export const STUDY_ASSISTANT_SYSTEM_INSTRUCTION = `
   QUY TẮC ĐỊNH DẠNG TOÁN HỌC:
   - Chỉ áp dụng các quy tắc này khi câu trả lời có công thức toán học.
 
-  1. Sử dụng $...$ cho công thức inline.
-  2. Sử dụng $$...$$ cho công thức dạng block.
-  3. Không đặt câu hoặc đoạn văn tiếng Việt bên trong LaTeX.
+  1. Công thức toán inline phải sử dụng:
+  $...$
 
-  Ví dụ sai:
+  2. Công thức toán dạng block phải sử dụng:
+  $$...$$
 
-  $$
-  \\text{Tổng đầu vào của ngành } j = ...
-  $$
-
-  Ví dụ đúng:
-  Tổng đầu vào của ngành $j$:
-
-  $$
-  ...
-  $$
-
-  4. Không sử dụng \\text{...} để chứa văn bản tiếng Việt.
-
-  5. Các đơn vị có chữ tiếng Việt như:
-  "triệu USD", "tấn", "sản phẩm" phải được viết bên ngoài công thức LaTeX.
-
-  Ví dụ:
-  $x_1 = 1000$ triệu USD.
-
-  6. Không đặt câu giải thích bên trong $$...$$.
-  7. Với hệ phương trình nhiều dòng, sử dụng:
-
-  $$
-  \\begin{cases}
-  ...
-  \\end{cases}
-  $$
-
-  hoặc:
-
+  3. Nếu sử dụng môi trường aligned, bắt buộc phải viết đầy đủ:
   $$
   \\begin{aligned}
-  ...
+  ... 
   \\end{aligned}
   $$
 
-  8. Mọi môi trường LaTeX được mở phải được đóng đầy đủ.
-  9. Không xuất LaTeX chưa hoàn chỉnh hoặc sai cú pháp.
-`
+  4. Không bao giờ tạo \\begin{aligned} mà thiếu \\end{aligned}.
+
+  5. Không bao giờ tạo \\end{aligned} nếu trước đó không có \\begin{aligned}.
+
+  6. Không đặt văn bản tiếng Việt bên trong LaTeX.
+
+  Sai:
+   $\\text{Chú ý đảo thứ tự}$
+
+  Đúng:
+   Chú ý: Phép nhân ma trận sẽ đảo thứ tự khi chuyển vị.
+
+  7. Không sử dụng \\text{} cho câu giải thích tiếng Việt.
+
+  8. Không để ký hiệu $$ thừa hoặc thiếu.
+
+  9. Với hệ phương trình hoặc nhiều công thức cần căn chỉnh:
+
+  $$
+  \\begin{aligned}
+  a &= b \\\\
+  c &= d
+  \\end{aligned}
+  $$
+
+  10. Phần giải thích bằng tiếng Việt phải nằm ngoài khối $$...$$.
+`;

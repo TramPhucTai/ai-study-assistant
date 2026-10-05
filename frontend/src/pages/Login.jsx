@@ -22,15 +22,38 @@ function Login() {
     const password = formData.get("password");
 
     try {
-      toast.loading("Signing In", { id: "login" });
+
+      toast.loading("Đang đăng nhập...", {
+        id: "login",
+      });
 
       await auth?.login(email, password);
 
-      toast.success("Signing In Successfully", { id: "login" });
+      toast.success("Đăng nhập thành công!", {
+        id: "login",
+      });
+
     } catch (error) {
+
       console.log(error);
 
-      toast.error("Signing In Failed", { id: "login" });
+      const validationErrors = error.response?.data?.errors;
+
+      if (validationErrors && validationErrors.length > 0) {
+        toast.error(validationErrors[0].msg, {
+          id: "login",
+        });
+
+        return;
+      }
+
+      toast.error(
+        error.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại.",
+        {
+          id: "login",
+        }
+      );
+      
     }
   };
 
