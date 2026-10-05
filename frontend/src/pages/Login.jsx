@@ -53,7 +53,7 @@ function Login() {
           id: "login",
         }
       );
-      
+
     }
   };
 
@@ -71,7 +71,10 @@ function Login() {
         justifyContent: "center",
         alignItems: "center",
         position: "relative",
-        px: 3,
+        px: {
+          xs: 2,
+          sm: 3,
+        },
         boxSizing: "border-box",
       }}
     >
@@ -151,11 +154,22 @@ function Login() {
         {/* Login box */}
         <Box
           sx={{
-            width: "400px",
-            padding: "30px",
+            width: {
+              xs: "100%",
+              sm: "400px",
+            },
+            maxWidth: {
+              xs: "340px",
+              sm: "400px",
+            },
+            padding: {
+              xs: "20px",
+              sm: "30px",
+            },
             boxShadow: "10px 10px 20px #000",
             borderRadius: "10px",
             flexShrink: 0,
+            boxSizing: "border-box",
           }}
         >
           <Typography
@@ -163,7 +177,14 @@ function Login() {
             sx={{
               textAlign: "center",
               fontWeight: 600,
-              mb: 2,
+              mb: {
+                xs: 1.5,
+                sm: 2,
+              },
+              fontSize: {
+                xs: "30px",
+                sm: "34px",
+              },
             }}
           >
             Đăng nhập

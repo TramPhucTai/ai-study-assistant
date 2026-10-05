@@ -1,8 +1,13 @@
 import { useState } from "react";
-import { TextField, IconButton, InputAdornment } from "@mui/material";
-import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-
-
+import {
+  TextField,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import {
+  IoEyeOutline,
+  IoEyeOffOutline,
+} from "react-icons/io5";
 
 function CustomizedInput(props) {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,6 +16,7 @@ function CustomizedInput(props) {
 
   return (
     <TextField
+      fullWidth
       margin="normal"
       name={props.name}
       label={props.label}
@@ -19,7 +25,6 @@ function CustomizedInput(props) {
           ? "text"
           : props.type
       }
-
       slotProps={{
         inputLabel: {
           sx: {
@@ -33,10 +38,14 @@ function CustomizedInput(props) {
 
         input: {
           sx: {
-            width: "400px",
+            width: "100%",
             borderRadius: 2,
-            fontSize: 20,
+            fontSize: {
+              xs: 16,
+              sm: 20,
+            },
             color: "white",
+            boxSizing: "border-box",
           },
 
           endAdornment: isPassword ? (
