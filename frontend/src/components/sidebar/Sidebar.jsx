@@ -474,8 +474,15 @@ function Sidebar({
 
           position: "fixed",
 
-          top: 14,
-          left: 14,
+          top: {
+            xs: "10px",
+            sm: "14px",
+          },
+
+          left: {
+            xs: "12px",
+            sm: "14px",
+          },
 
           width: 44,
           height: 44,
@@ -551,19 +558,19 @@ function Sidebar({
           },
 
           "& .MuiDrawer-paper":
-            {
-              width:
-                "min(320px, 85vw)",
+          {
+            width:
+              "min(320px, 85vw)",
 
-              bgcolor:
-                "#2e2e51",
+            bgcolor:
+              "#2e2e51",
 
-              borderRight:
-                "1px solid #475569",
+            borderRight:
+              "1px solid #475569",
 
-              boxSizing:
-                "border-box",
-            },
+            boxSizing:
+              "border-box",
+          },
         }}
       >
         {sidebarContent}

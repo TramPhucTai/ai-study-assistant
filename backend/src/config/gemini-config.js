@@ -10,4 +10,4 @@ export const ai = new GoogleGenAI({
   },
 });
 
-export const geminiModel = 'gemini-3.8-flash';
+export const geminiModel = 'gemini-3.5-flash';

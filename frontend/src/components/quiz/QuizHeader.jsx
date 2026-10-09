@@ -7,11 +7,20 @@ function QuizHeader({ conversation, onBackToChat }) {
   return (
     <Box
       sx={{
-        height: "72px",
+        height: {
+          xs: "64px",
+          sm: "72px",
+        },
+
         flexShrink: 0,
         display: "flex",
         alignItems: "center",
-        px: 3,
+
+        px: {
+          xs: 1.5,
+          sm: 3,
+        },
+
         bgcolor: "#111b27",
         borderBottom: "1px solid #334155",
         boxSizing: "border-box",
@@ -24,19 +33,44 @@ function QuizHeader({ conversation, onBackToChat }) {
           alignItems: "center",
           flex: 1,
           minWidth: 0,
+
+          // Leave room for hamburger on mobile
+          ml: {
+            xs: 6.5,
+            md: 0,
+          },
         }}
       >
-        <FiFileText
-          size={24}
-          color="white"
-        />
+        <Box
+          sx={{
+            display: "flex",
+            flexShrink: 0,
+
+            fontSize: {
+              xs: "20px",
+              sm: "24px",
+            },
+          }}
+        >
+          <FiFileText color="white" />
+        </Box>
 
         <Typography
           noWrap
           sx={{
-            ml: 2,
+            ml: {
+              xs: 1,
+              sm: 2,
+            },
+
+            minWidth: 0,
             color: "white",
-            fontSize: "18px",
+
+            fontSize: {
+              xs: "14px",
+              sm: "18px",
+            },
+
             fontWeight: 600,
           }}
         >
@@ -49,21 +83,57 @@ function QuizHeader({ conversation, onBackToChat }) {
         </Typography>
       </Box>
 
+
       {/* Back to Chat */}
       <Button
         onClick={onBackToChat}
-        startIcon={
-          <FiArrowLeft size={21} />
-        }
+        startIcon={<FiArrowLeft />}
         sx={{
-          height: "48px",
-          px: 2.5,
+          height: {
+            xs: "40px",
+            sm: "48px",
+          },
+
+          px: {
+            xs: 1.25,
+            sm: 2.5,
+          },
+
+          ml: {
+            xs: 1,
+            sm: 2,
+          },
+
+          flexShrink: 0,
+          minWidth: 0,
+
           bgcolor: "#00E5FF",
           color: "black",
+
           borderRadius: "7px",
           textTransform: "none",
-          fontSize: "16px",
+
+          fontSize: {
+            xs: "14px",
+            sm: "16px",
+          },
+
           fontWeight: 600,
+
+          "& .MuiButton-startIcon": {
+            mr: {
+              xs: 0.5,
+              sm: 1,
+            },
+
+            "& svg": {
+              fontSize: {
+                xs: "18px",
+                sm: "21px",
+              },
+            },
+          },
+
           "&:hover": {
             bgcolor: "white",
           },

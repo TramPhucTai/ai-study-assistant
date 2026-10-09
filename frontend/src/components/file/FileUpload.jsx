@@ -121,9 +121,15 @@ function FileUpload({ onUploadSuccess }) {
         // Loading screen
         <Box
           sx={{
-            width: "100%",
+            width: {
+              xs: "90%",
+              sm: "100%",
+            },
             maxWidth: "520px",
-            minHeight: "180px",
+            minHeight: {
+              xs: "200px",
+              sm: "180px",
+            },
 
             border: "2px dashed #9ca3af",
             borderRadius: 3,
@@ -174,9 +180,15 @@ function FileUpload({ onUploadSuccess }) {
         <Box
           {...getRootProps()}
           sx={{
-            width: "100%",
+            width: {
+              xs: "90%",
+              sm: "100%",
+            },
             maxWidth: "520px",
-            minHeight: "180px",
+            minHeight: {
+              xs: "200px",
+              sm: "180px",
+            },
 
             border: "2px dashed",
 
@@ -214,8 +226,23 @@ function FileUpload({ onUploadSuccess }) {
             color="#d1d5db"
           />
 
+          {/* Mobile */}
           <Typography
             sx={{
+              display: { xs: "block", sm: "none" },
+              color: "white",
+              fontSize: "18px",
+              mt: 2,
+              textAlign: "center",
+            }}
+          >
+            Nhấn để chọn tệp PDF
+          </Typography>
+
+          {/* Tablet/Desktop */}
+          <Typography
+            sx={{
+              display: { xs: "none", sm: "block" },
               color: "white",
               fontSize: "20px",
               mt: 2,
@@ -226,11 +253,33 @@ function FileUpload({ onUploadSuccess }) {
               : "Kéo và thả tệp PDF vào đây để bắt đầu"}
           </Typography>
 
+          {/* Mobile */}
           <Typography
             sx={{
+              display: { xs: "block", sm: "none" },
               color: "#9ca3af",
-              fontSize: "16px",
+              fontSize: {
+                xs: "15px",
+                sm: "16px",
+              },
               mt: 1,
+              textAlign: "center",
+            }}
+          >
+            Tệp PDF tối đa 10 MB
+          </Typography>
+
+          {/* Tablet/Desktop */}
+          <Typography
+            sx={{
+              display: { xs: "none", sm: "block" },
+              color: "#9ca3af",
+              fontSize: {
+                xs: "15px",
+                sm: "16px",
+              },
+              mt: 1,
+              textAlign: "center",
             }}
           >
             hoặc nhấn để chọn tệp

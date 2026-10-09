@@ -5,15 +5,28 @@ import { BsQuestionCircle } from "react-icons/bs";
 
 
 
-function DocumentHeader({ conversation, isGenerating, onSummarize, onCreateQuiz }) {
+function DocumentHeader({
+  conversation,
+  isGenerating,
+  onSummarize,
+  onCreateQuiz
+}) {
   return (
     <Box
       sx={{
-        height: "72px",
+        height: {
+          xs: "64px",
+          sm: "72px"
+        },
         flexShrink: 0,
         display: "flex",
         alignItems: "center",
-        px: 3,
+
+        px: {
+          xs: 1.5,
+          sm: 3
+        },
+
         bgcolor: "#111b27",
         borderBottom: "1px solid #334155",
         boxSizing: "border-box",
@@ -26,19 +39,39 @@ function DocumentHeader({ conversation, isGenerating, onSummarize, onCreateQuiz 
           alignItems: "center",
           flex: 1,
           minWidth: 0,
+          ml: {
+            xs: 6.5,
+            sm: 0,
+          },
         }}
       >
-        <FiFileText
-          size={24}
-          color="white"
-        />
+        <Box
+          sx={{
+            display: "flex",
+            flexShrink: 0,
+            fontSize: {
+              xs: "20px",
+              sm: "24px"
+            }
+          }}
+        >
+          <FiFileText color="white" />
+        </Box>
 
         <Typography
           noWrap
           sx={{
-            ml: 2,
+            ml: {
+              xs: 1,
+              sm: 2
+            },
             color: "white",
-            fontSize: "18px",
+
+            fontSize: {
+              xs: "14px",
+              sm: "18px"
+            },
+
             fontWeight: 600,
           }}
         >
@@ -46,8 +79,7 @@ function DocumentHeader({ conversation, isGenerating, onSummarize, onCreateQuiz 
             ? conversation.title.toLowerCase().endsWith(".pdf")
               ? conversation.title
               : `${conversation.title}.pdf`
-            : "Tài liệu.pdf"
-          }
+            : "Tài liệu.pdf"}
         </Typography>
       </Box>
 
@@ -57,8 +89,18 @@ function DocumentHeader({ conversation, isGenerating, onSummarize, onCreateQuiz 
         sx={{
           display: "flex",
           alignItems: "center",
-          gap: 1.5,
-          ml: 2,
+
+          gap: {
+            xs: 0.75,
+            sm: 1.5
+          },
+
+          ml: {
+            xs: 1,
+            sm: 2
+          },
+
+          flexShrink: 0,
         }}
       >
         {/* Summarize */}
@@ -66,19 +108,46 @@ function DocumentHeader({ conversation, isGenerating, onSummarize, onCreateQuiz 
           onClick={onSummarize}
           disabled={isGenerating}
           startIcon={
-            <MdOutlineSummarize
-              size={20}
-            />
+            <MdOutlineSummarize />
           }
           sx={{
-            height: "48px",
-            px: 2.5,
+            height: {
+              xs: "40px",
+              sm: "48px"
+            },
+
+            px: {
+              xs: 1.25,
+              sm: 2.5
+            },
+
+            minWidth: 0,
+
             bgcolor: "#00E5FF",
             color: "black",
             borderRadius: "7px",
             textTransform: "none",
-            fontSize: "16px",
+
+            fontSize: {
+              xs: "14px",
+              sm: "16px"
+            },
+
             fontWeight: 600,
+
+            "& .MuiButton-startIcon": {
+              mr: {
+                xs: 0.5,
+                sm: 1
+              },
+
+              "& svg": {
+                fontSize: {
+                  xs: "18px",
+                  sm: "20px"
+                }
+              }
+            },
 
             "&:hover": {
               bgcolor: "white"
@@ -97,32 +166,81 @@ function DocumentHeader({ conversation, isGenerating, onSummarize, onCreateQuiz 
         <Button
           onClick={onCreateQuiz}
           disabled={isGenerating}
-          startIcon={
-            <BsQuestionCircle
-              size={21}
-            />
-          }
+          startIcon={<BsQuestionCircle />}
           sx={{
-            height: "48px",
-            px: 2.5,
+            height: {
+              xs: "40px",
+              sm: "48px",
+            },
+
+            px: {
+              xs: 1.25,
+              sm: 2.5,
+            },
+
+            minWidth: 0,
+
             bgcolor: "#00E5FF",
             color: "black",
             borderRadius: "7px",
             textTransform: "none",
-            fontSize: "16px",
+
+            fontSize: {
+              xs: "14px",
+              sm: "16px",
+            },
+
             fontWeight: 600,
 
+            "& .MuiButton-startIcon": {
+              mr: {
+                xs: 0.5,
+                sm: 1,
+              },
+
+              "& svg": {
+                fontSize: {
+                  xs: "18px",
+                  sm: "21px",
+                },
+              },
+            },
+
             "&:hover": {
-              bgcolor: "white"
+              bgcolor: "white",
             },
 
             "&.Mui-disabled": {
               bgcolor: "#00e5ff11",
-              color: "#888"
-            }
+              color: "#888",
+            },
           }}
         >
-          Tạo Quiz
+          {/* Mobile */}
+          <Box
+            component="span"
+            sx={{
+              display: {
+                xs: "inline",
+                sm: "none",
+              },
+            }}
+          >
+            Quiz
+          </Box>
+
+          {/* Desktop */}
+          <Box
+            component="span"
+            sx={{
+              display: {
+                xs: "none",
+                sm: "inline",
+              },
+            }}
+          >
+            Tạo Quiz
+          </Box>
         </Button>
       </Box>
     </Box>

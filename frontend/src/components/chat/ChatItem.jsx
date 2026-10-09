@@ -23,11 +23,27 @@ function ChatItem({ content, role }) {
         <Box
           sx={{
             display: "flex",
+
+            flexDirection: {
+              xs: "column",
+              sm: "row",
+            },
+
             alignItems: "flex-start",
-            p: 2,
+
+            p: {
+              xs: 1.5,
+              sm: 2,
+            },
+
             bgcolor: "#00748112",
             my: 2,
-            gap: 2,
+
+            gap: {
+              xs: 1,
+              sm: 2,
+            },
+
             minWidth: 0,
             maxWidth: "100%",
           }}
@@ -38,8 +54,17 @@ function ChatItem({ content, role }) {
             sx={{
               ml: 0,
               flexShrink: 0,
-              width: 48,
-              height: 48,
+
+              width: {
+                xs: 40,
+                sm: 48,
+              },
+
+              height: {
+                xs: 40,
+                sm: 48,
+              },
+
               bgcolor: "transparent",
 
               "& img": {
@@ -117,7 +142,10 @@ function ChatItem({ content, role }) {
                     <Box
                       component="h1"
                       sx={{
-                        fontSize: "28px",
+                        fontSize: {
+                          xs: "22px",
+                          sm: "28px",
+                        },
                         mt: 2,
                         mb: 1.5,
                       }}
@@ -132,7 +160,10 @@ function ChatItem({ content, role }) {
                     <Box
                       component="h2"
                       sx={{
-                        fontSize: "24px",
+                        fontSize: {
+                          xs: "20px",
+                          sm: "24px",
+                        },
                         mt: 2,
                         mb: 1.5,
                       }}
@@ -147,7 +178,10 @@ function ChatItem({ content, role }) {
                     <Box
                       component="h3"
                       sx={{
-                        fontSize: "21px",
+                        fontSize: {
+                          xs: "18px",
+                          sm: "21px",
+                        },
                         mt: 2,
                         mb: 1,
                       }}
@@ -178,10 +212,16 @@ function ChatItem({ content, role }) {
                     <Box
                       component="ul"
                       sx={{
-                        fontSize: "18px",
+                        fontSize: {
+                          xs: "15px",
+                          sm: "18px",
+                        },
                         lineHeight: 1.6,
                         my: 1,
-                        pl: 4,
+                        pl: {
+                          xs: 2.5,
+                          sm: 4,
+                        },
                       }}
                     >
                       {children}
@@ -194,10 +234,16 @@ function ChatItem({ content, role }) {
                     <Box
                       component="ol"
                       sx={{
-                        fontSize: "18px",
+                        fontSize: {
+                          xs: "15px",
+                          sm: "18px",
+                        },
                         lineHeight: 1.6,
                         my: 1,
-                        pl: 4,
+                        pl: {
+                          xs: 2.5,
+                          sm: 4,
+                        },
                       }}
                     >
                       {children}
@@ -210,7 +256,10 @@ function ChatItem({ content, role }) {
                     <Box
                       component="li"
                       sx={{
-                        fontSize: "18px",
+                        fontSize: {
+                          xs: "15px",
+                          sm: "18px",
+                        },
                         lineHeight: 1.6,
                       }}
                     >
@@ -227,7 +276,14 @@ function ChatItem({ content, role }) {
                         width: "100%",
                         borderCollapse: "collapse",
                         my: 2,
-                        fontSize: "18px",
+                        fontSize: {
+                          xs: "14px",
+                          sm: "18px",
+                        },
+                        padding: {
+                          xs: "6px",
+                          sm: "10px",
+                        },
                       }}
                     >
                       {children}
@@ -241,7 +297,14 @@ function ChatItem({ content, role }) {
                       component="th"
                       sx={{
                         border: "1px solid #666",
-                        padding: "10px",
+                        padding: {
+                          xs: "6px",
+                          sm: "10px",
+                        },
+                        fontSize: {
+                          xs: "14px",
+                          sm: "18px",
+                        },
                         textAlign: "left",
                         fontWeight: "bold",
                       }}
@@ -257,7 +320,14 @@ function ChatItem({ content, role }) {
                       component="td"
                       sx={{
                         border: "1px solid #666",
-                        padding: "10px",
+                        padding: {
+                          xs: "6px",
+                          sm: "10px",
+                        },
+                        fontSize: {
+                          xs: "14px",
+                          sm: "18px",
+                        },
                         verticalAlign: "top",
                       }}
                     >
@@ -278,10 +348,20 @@ function ChatItem({ content, role }) {
         <Box
           sx={{
             display: "flex",
+            flexDirection: {
+              xs: "column",
+              sm: "row",
+            },
             alignItems: "flex-start",
-            p: 2,
+            p: {
+              xs: 1.5,
+              sm: 2,
+            },
             bgcolor: "#075E68",
-            gap: 2,
+            gap: {
+              xs: 1,
+              sm: 2,
+            },
             borderRadius: 2,
             minWidth: 0,
             maxWidth: "100%",
@@ -293,8 +373,21 @@ function ChatItem({ content, role }) {
               bgcolor: "black",
               color: "white",
               flexShrink: 0,
-              width: 48,
-              height: 48,
+
+              width: {
+                xs: 40,
+                sm: 48,
+              },
+
+              height: {
+                xs: 40,
+                sm: 48,
+              },
+
+              fontSize: {
+                xs: "16px",
+                sm: "20px",
+              },
             }}
           >
             {getInitials(auth?.user?.name)}
@@ -302,7 +395,11 @@ function ChatItem({ content, role }) {
 
           <Box
             sx={{
-              fontSize: "18px",
+              fontSize: {
+                xs: "15px",
+                sm: "18px",
+              },
+              width: "100%",
               minWidth: 0,
               maxWidth: "100%",
               overflowWrap: "break-word",
@@ -317,8 +414,14 @@ function ChatItem({ content, role }) {
                     <Box
                       component="p"
                       sx={{
-                        fontSize: "18px",
-                        lineHeight: 1.6,
+                        fontSize: {
+                          xs: "15px",
+                          sm: "18px",
+                        },
+                        lineHeight: {
+                          xs: 1.55,
+                          sm: 1.6,
+                        },
                         m: 0,
                       }}
                     >
