@@ -92,9 +92,9 @@ export async function ensureGeminiFile(document) {
   const now = new Date();
 
   /*
-   * If we have a Gemini URI and it
-   * hasn't expired, keep using it.
-   */
+  Nếu tài liệu đã có URI, tên tệp Gemini và thời hạn sử dụng vẫn còn hiệu lực, 
+  hệ thống sẽ kiểm tra trạng thái tệp trước khi tiếp tục sử dụng
+  */
   if (
     document.geminiFileUri &&
     document.geminiFileName &&
@@ -110,7 +110,7 @@ export async function ensureGeminiFile(document) {
             document.geminiFileName
         });
 
-
+      // Chỉ sử dụng lại tệp khi Gemini xác nhận tệp đang hoạt động
       if (file.state === "ACTIVE") {
 
         return document;
@@ -118,26 +118,25 @@ export async function ensureGeminiFile(document) {
       }
 
     } catch {
-
+      // Nếu không thể lấy thông tin tệp, hệ thống sẽ tải lại PDF
     }
   }
 
   /*
-   * Gemini copy expired.
-   *
-   * Retrieve permanent PDF from S3
-   * and upload again.
-   */
+  Tệp trên Gemini có thể đã hết hạn hoặc không còn sử dụng được,
+  hệ thống tải lại PDF từ Amazon S3 và đưa lên Gemini.
+  */
   const geminiFile = await uploadPdfToGemini(document);
 
+  // Cập nhật thông tin tệp mới do Gemini trả về
   document.geminiFileName = geminiFile.name;
-
   document.geminiFileUri = geminiFile.uri;
 
   document.geminiExpirationTime = geminiFile.expirationTime
     ? new Date(geminiFile.expirationTime)
     : null;
 
+  // Lưu thông tin tệp mới vào cơ sở dữ liệu
   await document.save();
 
   return document;
