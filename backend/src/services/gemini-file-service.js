@@ -10,17 +10,13 @@ function sleep(ms) {
 }
 
 export async function uploadPdfToGemini(document) {
-  /*
-   * 1. Download PDF from permanent S3 storage
-   */
+  // Tải tệp PDF từ Amazon S3 để chuẩn bị gửi sang Gemini
   const pdfBuffer =
     await getFileFromS3(
       document.s3Key
     );
 
-  /*
-   * 2. Convert Node Buffer -> Blob
-   */
+  // Chuyển dữ liệu Buffer thành Blob với định dạng PDF
   const pdfBlob = new Blob(
     [pdfBuffer],
     {
@@ -28,9 +24,7 @@ export async function uploadPdfToGemini(document) {
     }
   );
 
-  /*
-   * 3. Upload PDF to Gemini Files API
-   */
+  // Tải tài liệu lên Gemini Files API để phục vụ quá trình xử lý bằng AI
   const uploadedFile =
     await ai.files.upload({
       file: pdfBlob,
@@ -41,16 +35,14 @@ export async function uploadPdfToGemini(document) {
       }
     });
 
-  /*
-   * 4. Wait until Gemini finishes
-   * processing the PDF.
-   */
+  // Kiểm tra trạng thái xử lý của tệp cho đến khi Gemini hoàn tất
   let geminiFile =
     await ai.files.get({
       name: uploadedFile.name
     });
 
   while (geminiFile.state === "PROCESSING") {
+    // Chờ 2 giây trước khi kiểm tra lại trạng thái tệp
     await sleep(2000);
 
     geminiFile =
@@ -59,6 +51,7 @@ export async function uploadPdfToGemini(document) {
       });
   }
 
+  // Dừng xử lý nếu Gemini không thể xử lý tài liệu
   if (geminiFile.state === "FAILED") {
     throw new Error(
       "Gemini failed to process the PDF"
@@ -67,8 +60,6 @@ export async function uploadPdfToGemini(document) {
 
   return geminiFile;
 }
-
-
 
 export async function attachPdfToGemini(document) {
   const geminiFile = await uploadPdfToGemini(document);
@@ -86,15 +77,10 @@ export async function attachPdfToGemini(document) {
   return document;
 }
 
-
-
 export async function ensureGeminiFile(document) {
   const now = new Date();
 
-  /*
-  Nếu tài liệu đã có URI, tên tệp Gemini và thời hạn sử dụng vẫn còn hiệu lực, 
-  hệ thống sẽ kiểm tra trạng thái tệp trước khi tiếp tục sử dụng
-  */
+  // Kiểm tra thông tin và thời hạn sử dụng của tệp trước khi dùng lại
   if (
     document.geminiFileUri &&
     document.geminiFileName &&
@@ -118,14 +104,11 @@ export async function ensureGeminiFile(document) {
       }
 
     } catch {
-      // Nếu không thể lấy thông tin tệp, hệ thống sẽ tải lại PDF
+      // Nếu không thể truy xuất tệp, tiếp tục quy trình tải lại tài liệu
     }
   }
 
-  /*
-  Tệp trên Gemini có thể đã hết hạn hoặc không còn sử dụng được,
-  hệ thống tải lại PDF từ Amazon S3 và đưa lên Gemini.
-  */
+  // Tải lại PDF từ Amazon S3 nếu tệp Gemini hết hạn hoặc không còn sử dụng được
   const geminiFile = await uploadPdfToGemini(document);
 
   // Cập nhật thông tin tệp mới do Gemini trả về
@@ -141,8 +124,6 @@ export async function ensureGeminiFile(document) {
 
   return document;
 }
-
-
 
 export async function deleteGeminiFile(fileName) {
   if (!fileName) return;
