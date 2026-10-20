@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 
 
 
+// Khởi tạo kết nối AWS S3 bằng thông tin cấu hình trong biến môi trường
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
 
@@ -19,6 +20,7 @@ export async function uploadToS3(file) {
 
   const extension = originalName.split(".").pop();
 
+  // Tạo mã định danh ngẫu nhiên để hạn chế trùng tên tệp khi lưu trên S3
   const fileKey = `uploads/${randomUUID()}.${extension}`;
 
   const command = new PutObjectCommand({
@@ -45,10 +47,7 @@ export async function getFileFromS3(fileKey) {
 
   const response = await s3.send(command);
 
-  /*
-   * AWS SDK v3 can convert the S3 stream
-   * into a Uint8Array.
-   */
+  // Chuyển luồng dữ liệu nhận từ S3 thành mảng byte, sau đó tạo Buffer
   const bytes = await response.Body.transformToByteArray();
 
   return Buffer.from(bytes);

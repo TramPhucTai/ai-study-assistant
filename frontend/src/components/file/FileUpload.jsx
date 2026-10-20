@@ -6,6 +6,8 @@ import { toast } from "react-hot-toast";
 import { uploadDocument } from "../../helpers/api-communicator.js";
 import loadingSpinner from "../../assets/loading-spinner.gif";
 
+
+
 function FileUpload({ onUploadSuccess }) {
   const [isUploading, setIsUploading] = useState(false);
 

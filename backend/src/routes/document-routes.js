@@ -7,13 +7,16 @@ import { uploadDocument, getDocumentById } from "../controllers/document-control
 
 const documentRoutes = Router();
 
+// Cấu hình nhận tệp tải lên và giới hạn dung lượng tối đa 10 MB
 const upload = multer({
+  // Lưu tệp tạm trong bộ nhớ để phục vụ quá trình xử lý
   storage: multer.memoryStorage(),
 
   limits: {
     fileSize: 10 * 1024 * 1024,
   },
 
+  // Chỉ chấp nhận tệp có định dạng PDF
   fileFilter: (req, file, cb) => {
     if (file.mimetype === "application/pdf") {
       cb(null, true);
@@ -23,6 +26,7 @@ const upload = multer({
   },
 });
 
+// API tải tài liệu lên, yêu cầu xác thực người dùng trước khi xử lý tệp
 documentRoutes.post(
   "/upload",
   verifyToken,
@@ -30,6 +34,7 @@ documentRoutes.post(
   uploadDocument
 );
 
+// API lấy thông tin tài liệu theo mã định danh, yêu cầu xác thực người dùng
 documentRoutes.get(
   "/:id",
   verifyToken,
