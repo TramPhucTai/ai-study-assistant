@@ -14,14 +14,12 @@ export const createConversation =
       const userId =
         res.locals.jwtData.id;
 
-
       const conversation =
         await Conversation.create({
           userId,
           title:
             "Cuộc trò chuyện mới"
         });
-
 
       return res
         .status(201)
@@ -52,7 +50,6 @@ export const createConversation =
         error
       );
 
-
       return res
         .status(500)
         .json({
@@ -66,8 +63,6 @@ export const createConversation =
 
   };
 
-
-
 export const getUserConversations =
   async (req, res) => {
 
@@ -75,7 +70,6 @@ export const getUserConversations =
 
       const userId =
         res.locals.jwtData.id;
-
 
       const conversations =
         await Conversation
@@ -88,7 +82,6 @@ export const getUserConversations =
           .sort({
             updatedAt: -1
           });
-
 
       return res
         .status(200)
@@ -107,7 +100,6 @@ export const getUserConversations =
         error
       );
 
-
       return res
         .status(500)
         .json({
@@ -121,8 +113,6 @@ export const getUserConversations =
 
   };
 
-
-
 export const getConversation =
   async (req, res) => {
 
@@ -135,7 +125,7 @@ export const getConversation =
         conversationId
       } = req.params;
 
-
+      // Kiểm tra mã hội thoại có đúng định dạng ObjectId của MongoDB hay không
       if (
         !mongoose.isValidObjectId(
           conversationId
@@ -153,7 +143,7 @@ export const getConversation =
 
       }
 
-
+      // Chỉ truy xuất hội thoại thuộc về người dùng đang đăng nhập
       const conversation =
         await Conversation.findOne({
           _id: conversationId,
@@ -162,7 +152,6 @@ export const getConversation =
           .select(
             "_id title documentId messages createdAt updatedAt"
           );
-
 
       if (!conversation) {
 
@@ -176,7 +165,6 @@ export const getConversation =
           });
 
       }
-
 
       return res
         .status(200)
@@ -195,7 +183,6 @@ export const getConversation =
         error
       );
 
-
       return res
         .status(500)
         .json({
@@ -209,8 +196,6 @@ export const getConversation =
 
   };
 
-
-
 export const deleteConversation =
   async (req, res) => {
 
@@ -220,7 +205,7 @@ export const deleteConversation =
 
       const { conversationId } = req.params;
 
-      // 1. Validate conversation ID
+      // Kiểm tra tính hợp lệ của mã hội thoại trước khi thực hiện xóa
       if (!mongoose.isValidObjectId(conversationId)) {
         return res.status(400)
           .json({
@@ -228,13 +213,12 @@ export const deleteConversation =
           });
       }
 
-      // 2. Find conversation first
+      // Tìm hội thoại thuộc người dùng hiện tại trước khi xóa
       const conversation =
         await Conversation.findOne({
           _id: conversationId,
           userId
         });
-
 
       if (!conversation) {
         return res.status(404)
@@ -243,7 +227,7 @@ export const deleteConversation =
           });
       }
 
-      // 3. Find associated document
+      // Tìm tài liệu PDF liên kết với hội thoại
       let document = null;
 
       if (conversation.documentId) {
@@ -256,14 +240,14 @@ export const deleteConversation =
           });
       }
 
-      // 4. Delete PDF from S3
+      // Xóa tệp PDF đã lưu trên Amazon S3 nếu tài liệu có khóa lưu trữ
       if (document?.s3Key) {
         await deleteFileFromS3(
           document.s3Key
         );
       }
 
-      // 5. Delete temporary Gemini file
+      // Xóa tệp tạm đã tải lên Gemini nếu có thông tin tệp
       if (document?.geminiFileName) {
         await deleteGeminiFile(
           document.geminiFileName
@@ -271,7 +255,7 @@ export const deleteConversation =
 
       }
 
-      // 6. Delete Document from MongoDB
+      // Xóa bản ghi tài liệu khỏi cơ sở dữ liệu MongoDB
       if (document) {
         await Document.deleteOne({
           _id: document._id,
@@ -280,10 +264,8 @@ export const deleteConversation =
 
       }
 
-      // 7. Delete Conversation
-      // messages and geminiHistory
-      // are embedded inside Conversation,
-      // so they are removed automatically.
+      // Xóa hội thoại; messages và geminiHistory được lưu trực tiếp
+      // trong bản ghi hội thoại nên sẽ bị xóa cùng bản ghi này
       await Conversation.deleteOne({
         _id: conversation._id,
         userId

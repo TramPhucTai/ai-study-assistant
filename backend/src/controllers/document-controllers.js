@@ -17,10 +17,10 @@ export const uploadDocument = async (req, res) => {
       });
     }
 
-    // 1. Upload permanently to S3
+    // Lưu tệp PDF vào Amazon S3 để lưu trữ lâu dài
     const uploaded = await uploadToS3(req.file);
 
-    // 2. Create MongoDB Document
+    // Tạo bản ghi tài liệu trong MongoDB, lưu thông tin người dùng và khóa tệp trên S3
     let document = await Document.create({
       userId,
       fileName: uploaded.file_name,
@@ -28,10 +28,10 @@ export const uploadDocument = async (req, res) => {
       mimeType: req.file.mimetype
     });
 
-    // 3. Upload temporary copy to Gemini
+    // Tải tài liệu lên Gemini để phục vụ chức năng hỏi đáp bằng AI
     document = await attachPdfToGemini(document);
 
-    // 4. Create conversation for this PDF
+    // Tạo hội thoại gắn với tài liệu PDF vừa tải lên
     const conversation = await Conversation.create({
       userId,
       documentId: document._id,
@@ -68,8 +68,6 @@ export const uploadDocument = async (req, res) => {
   }
 };
 
-
-
 export const getDocumentById = async (req, res) => {
   try {
     const userId =
@@ -77,6 +75,7 @@ export const getDocumentById = async (req, res) => {
 
     const { id } = req.params;
 
+    // Tìm tài liệu theo mã định danh và mã người dùng để giới hạn quyền truy cập
     const document =
       await Document.findOne({
         _id: id,
