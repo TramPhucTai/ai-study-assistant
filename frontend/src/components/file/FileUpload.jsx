@@ -6,11 +6,8 @@ import { toast } from "react-hot-toast";
 import { uploadDocument } from "../../helpers/api-communicator.js";
 import loadingSpinner from "../../assets/loading-spinner.gif";
 
-
-
 function FileUpload({ onUploadSuccess }) {
   const [isUploading, setIsUploading] = useState(false);
-
 
   const handleUpload = async (file) => {
     try {
@@ -34,22 +31,21 @@ function FileUpload({ onUploadSuccess }) {
     }
   };
 
-
   const {
     getRootProps,
     getInputProps,
     isDragActive,
     isDragReject,
   } = useDropzone({
-    // Make sure that users can only upload PDF files
+    // Chỉ chấp nhận tệp PDF để phù hợp với chức năng xử lý tài liệu
     accept: {
       "application/pdf": [".pdf"],
     },
 
-    // Can only upload one file at a time
+    // Mỗi lần chỉ cho phép tải lên một tệp
     multiple: false,
 
-    // Disable dropzone while backend is processing
+    // Khóa thao tác chọn và kéo thả tệp trong khi hệ thống đang xử lý
     disabled: isUploading,
 
     onDrop: async (acceptedFiles, rejectedFiles) => {
@@ -63,7 +59,7 @@ function FileUpload({ onUploadSuccess }) {
       if (acceptedFiles.length > 0) {
         const file = acceptedFiles[0];
 
-        // Reject file larger than 10 MB
+        // Từ chối tệp có dung lượng vượt quá giới hạn 10 MB
         if (file.size > 10 * 1024 * 1024) {
           toast.error(
             "Vui lòng tải tệp PDF nhỏ hơn 10 MB"
@@ -76,8 +72,6 @@ function FileUpload({ onUploadSuccess }) {
       }
     },
   });
-
-
 
   return (
     <Box
@@ -116,9 +110,8 @@ function FileUpload({ onUploadSuccess }) {
         </Box>
       </Typography>
 
-
       {isUploading ? (
-        // Loading screen
+        // Hiển thị trạng thái chờ trong khi tải lên và xử lý tài liệu
         <Box
           sx={{
             width: {
@@ -176,7 +169,7 @@ function FileUpload({ onUploadSuccess }) {
           </Typography>
         </Box>
       ) : (
-        // Upload dropzone
+        // Hiển thị vùng chọn tệp khi hệ thống sẵn sàng nhận tài liệu
         <Box
           {...getRootProps()}
           sx={{
@@ -226,7 +219,7 @@ function FileUpload({ onUploadSuccess }) {
             color="#d1d5db"
           />
 
-          {/* Mobile */}
+          {/* Nội dung hướng dẫn dành cho điện thoại */}
           <Typography
             sx={{
               display: { xs: "block", sm: "none" },
@@ -239,7 +232,7 @@ function FileUpload({ onUploadSuccess }) {
             Nhấn để chọn tệp PDF
           </Typography>
 
-          {/* Tablet/Desktop */}
+          {/* Nội dung hướng dẫn dành cho máy tính bảng và máy tính */}
           <Typography
             sx={{
               display: { xs: "none", sm: "block" },
@@ -253,7 +246,7 @@ function FileUpload({ onUploadSuccess }) {
               : "Kéo và thả tệp PDF vào đây để bắt đầu"}
           </Typography>
 
-          {/* Mobile */}
+          {/* Hiển thị giới hạn dung lượng trên điện thoại */}
           <Typography
             sx={{
               display: { xs: "block", sm: "none" },
@@ -269,7 +262,7 @@ function FileUpload({ onUploadSuccess }) {
             Tệp PDF tối đa 10 MB
           </Typography>
 
-          {/* Tablet/Desktop */}
+          {/* Hướng dẫn chọn tệp bổ sung trên máy tính bảng và máy tính */}
           <Typography
             sx={{
               display: { xs: "none", sm: "block" },
