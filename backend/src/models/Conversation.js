@@ -60,7 +60,6 @@ const conversationSchema = new mongoose.Schema(
       default: []
     },
 
-    // You can use this later when PDF support is completed
     documentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Document",

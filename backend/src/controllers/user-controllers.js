@@ -7,7 +7,7 @@ import { COOKIE_NAME } from "../utils/constants.js";
 
 export const getAllUsers = async (req, res, next) => {
   try {
-    // Get all users
+    // Lấy danh sách tất cả người dùng trong cơ sở dữ liệu
     const users = await User.find()
 
     return res.status(200).json({
@@ -25,7 +25,7 @@ export const getAllUsers = async (req, res, next) => {
   }
 };
 
-// User Signup
+// Xử lý đăng ký tài khoản mới
 export const userSignup = async (req, res, next) => {
   try {
     
@@ -35,7 +35,7 @@ export const userSignup = async (req, res, next) => {
 
     if (existingUser) return res.status(401).send('User already registered');
 
-    // Hash password
+    // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
     const hashedPassword = await hash(password, 10);
 
     const user = new User({ 
@@ -46,7 +46,7 @@ export const userSignup = async (req, res, next) => {
 
     await user.save();
 
-    // Create token and store cookie
+    // Xóa cookie cũ trước khi tạo phiên đăng nhập mới
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
       domain: 'localhost',
@@ -54,6 +54,7 @@ export const userSignup = async (req, res, next) => {
       path: '/'
     });
 
+    // Tạo JWT có thời hạn 7 ngày và lưu vào cookie
     const token = createToken(user._id.toString(), user.email, '7d')
 
     const expires = new Date();
@@ -84,7 +85,7 @@ export const userSignup = async (req, res, next) => {
   }
 };
 
-// User login
+// Xử lý đăng nhập và kiểm tra thông tin tài khoản
 export const userLogin = async (req, res, next) => {
   try {
     
@@ -102,7 +103,7 @@ export const userLogin = async (req, res, next) => {
       return res.status(403).send('Incorrect Password');
     }
 
-    // Clear cookie after the user login again
+    // Xóa cookie cũ trước khi cấp mã xác thực cho phiên đăng nhập mới
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
       domain: 'localhost',
@@ -110,7 +111,7 @@ export const userLogin = async (req, res, next) => {
       path: '/'
     });
 
-    // JWT Tokens
+    // Tạo JWT từ mã định danh và email của người dùng
     const token = createToken(user._id.toString(), user.email, '7d')
 
     const expires = new Date();
@@ -141,7 +142,7 @@ export const userLogin = async (req, res, next) => {
   }
 };
 
-// Verify user
+// Kiểm tra tính hợp lệ của phiên đăng nhập và thông tin người dùng
 export const verifyUser = async (req, res, next) => {
   try {
 
@@ -151,6 +152,7 @@ export const verifyUser = async (req, res, next) => {
       return res.status(401).send('User not registered OR Token malfunctioned');
     }
 
+    // Đối chiếu mã người dùng trong cơ sở dữ liệu với mã được giải mã từ JWT
     if (user._id.toString() !== res.locals.jwtData.id) {
       return res.status(401).send("Permission didn't match");
     }
@@ -172,7 +174,7 @@ export const verifyUser = async (req, res, next) => {
   }
 };
 
-// User logout
+// Xử lý đăng xuất và kết thúc phiên đăng nhập
 export const userLogout = async (req, res, next) => {
   try {
 
@@ -182,10 +184,12 @@ export const userLogout = async (req, res, next) => {
       return res.status(401).send('User not registered OR Token malfunctioned');
     }
 
+    // Kiểm tra quyền trước khi cho phép người dùng đăng xuất
     if (user._id.toString() !== res.locals.jwtData.id) {
       return res.status(401).send("Permission didn't match");
     }
 
+    // Xóa cookie chứa JWT để kết thúc phiên đăng nhập
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
       domain: 'localhost',
