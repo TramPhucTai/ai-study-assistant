@@ -18,9 +18,7 @@ function QuizQuestionList({
     questionIndex
   ) => {
 
-    /*
-     * Result mode
-     */
+    // Kết quả
     if (isFinished) {
       const selectedAnswer =
         selectedAnswers[
@@ -46,9 +44,7 @@ function QuizQuestionList({
 
 
 
-    /*
-     * Normal quiz mode
-     */
+    // Làm bài
     if (
       questionIndex ===
       currentQuestionIndex
@@ -210,7 +206,7 @@ function QuizQuestionList({
 
 
 
-      {/* Question number grid */}
+      {/* Lưới câu hỏi */}
       <Box
         sx={{
           display: "grid",
@@ -275,7 +271,6 @@ function QuizQuestionList({
 
 
 
-      {/* Divider */}
       <Box
         sx={{
           height: "1px",
@@ -286,7 +281,6 @@ function QuizQuestionList({
 
 
 
-      {/* Legend */}
       <Box
         sx={{
           display: "flex",
@@ -332,7 +326,6 @@ function QuizQuestionList({
 
 
 
-      {/* Divider */}
       <Box
         sx={{
           height: "1px",

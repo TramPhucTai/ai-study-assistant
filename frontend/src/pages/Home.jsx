@@ -80,7 +80,7 @@ function Home() {
         minHeight: "100vh",
       }}
     >
-      {/* Header */}
+      {/* Tiêu đề */}
       <AppBar
         sx={{
           bgcolor: "transparent",
@@ -148,7 +148,7 @@ function Home() {
       </AppBar>
 
 
-      {/* Hero section */}
+      {/* Ảnh robot */}
       <Box
         sx={{
           minHeight: "320px",
@@ -194,7 +194,7 @@ function Home() {
           />
         </Box>
 
-        {/* Welcome */}
+        {/* Chào mừng */}
         <Box
           sx={{
             textAlign: {
@@ -275,7 +275,7 @@ function Home() {
       </Box>
 
 
-      {/* Features */}
+      {/* Tính năng */}
       <Box
         sx={{
           maxWidth: "1100px",
@@ -357,7 +357,7 @@ function Home() {
       </Box>
 
 
-      {/* How it works */}
+      {/* Cách hoạt động */}
       <Box
         sx={{
           maxWidth: "1100px",
@@ -405,7 +405,6 @@ function Home() {
                   mx: "auto",
                 }}
               >
-                {/* Step number */}
                 <Box
                   sx={{
                     width: "52px",

@@ -32,7 +32,7 @@ function DocumentHeader({
         boxSizing: "border-box",
       }}
     >
-      {/* Document information */}
+      {/* Thông tin tài liệu */}
       <Box
         sx={{
           display: "flex",
@@ -84,7 +84,7 @@ function DocumentHeader({
       </Box>
 
 
-      {/* Actions */}
+      {/* Các nút chức năng */}
       <Box
         sx={{
           display: "flex",
@@ -103,7 +103,7 @@ function DocumentHeader({
           flexShrink: 0,
         }}
       >
-        {/* Summarize */}
+        {/* Tóm tắt */}
         <Button
           onClick={onSummarize}
           disabled={isGenerating}
@@ -162,7 +162,7 @@ function DocumentHeader({
           Tóm tắt
         </Button>
 
-        {/* Create Quiz */}
+        {/* Tạo Quiz */}
         <Button
           onClick={onCreateQuiz}
           disabled={isGenerating}

@@ -19,7 +19,7 @@ function ChatItem({ content, role }) {
     <>
       {role === 'assistant' ? (
 
-        // Assistant
+        // AI
         <Box
           sx={{
             display: "flex",
@@ -344,7 +344,7 @@ function ChatItem({ content, role }) {
 
       ) : (
 
-        // User
+        // Người dùng
         <Box
           sx={{
             display: "flex",

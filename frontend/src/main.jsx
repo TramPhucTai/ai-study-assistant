@@ -1,4 +1,3 @@
-// import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { createTheme, ThemeProvider } from '@mui/material';
@@ -12,7 +11,6 @@ import { Toaster } from 'react-hot-toast';
 
 axios.defaults.baseURL = "http://localhost:5000/api/v1";
 
-// Allow setting the cookies directly from the backend
 axios.defaults.withCredentials = true;
 
 const theme = createTheme({

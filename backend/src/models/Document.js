@@ -26,12 +26,7 @@ const documentSchema = new mongoose.Schema(
       default: "application/pdf"
     },
 
-    /*
-     * Gemini Files API information.
-     *
-     * These are temporary because Gemini files
-     * expire after approximately 48 hours.
-     */
+    // Xóa sau 48 giờ
     geminiFileName: {
       type: String,
       default: null

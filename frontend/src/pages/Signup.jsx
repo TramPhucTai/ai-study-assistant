@@ -106,7 +106,7 @@ function Signup() {
         </Typography>
       </Box>
 
-      {/* Main content */}
+      {/* Vùng chính */}
       <Box
         sx={{
           width: "100%",
@@ -144,7 +144,7 @@ function Signup() {
           />
         </Box>
 
-        {/* Signup box */}
+        {/* Biểu mẫu đăng ký */}
         <Box
           sx={{
             width: {
@@ -222,7 +222,7 @@ function Signup() {
               Đăng ký
             </Button>
 
-            {/* Login section */}
+            {/* Khu đăng nhập */}
             <Box
               sx={{
                 mt: 2,

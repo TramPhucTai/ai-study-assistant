@@ -24,11 +24,7 @@ function Chat() {
   const [quickAction, setQuickAction] = useState(null);
   const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
 
-  /*
-   * Find the currently selected conversation.
-   * We can use this to display information such as
-   * the PDF filename in the document header.
-   */
+  // Xác định hội thoại đang được chọn để hiển thị các thông tin liên quan, chẳng hạn tên tệp PDF trên thanh tiêu đề tài liệu
   const activeConversation = conversations.find((conversation) =>
     conversation._id === activeConversationId
   );
@@ -83,7 +79,7 @@ function Chat() {
   }, [auth?.isLoggedIn, auth?.user]);
 
 
-  // Protected route
+  // Bảo vệ trang Chat, chuyển người dùng chưa đăng nhập đến trang đăng nhập
   useEffect(() => {
     if (auth?.isLoading) {
       return;
@@ -99,12 +95,7 @@ function Chat() {
   const handleSelectConversation = (conversationId) => {
     if (isGenerating) return;
 
-    /*
-     * We no longer load messages here.
-     *
-     * ChatMessagesContainer watches activeConversationId
-     * and loads the messages itself.
-     */
+    // Chỉ cập nhật mã hội thoại đang chọn. ChatMessagesContainer sẽ tự tải tin nhắn khi activeConversationId thay đổi
     setQuickAction(null);
     setActiveConversationId(conversationId);
   };
@@ -114,13 +105,7 @@ function Chat() {
   const handleNewConversation = () => {
     if (isGenerating) return;
 
-    /*
-     * No conversation is created yet.
-     *
-     * This represents the "New document" screen.
-     * Later, after the PDF is uploaded,
-     * we can create the conversation.
-     */
+    // Chưa tạo hội thoại mới tại thời điểm này. Hệ thống hiển thị giao diện tải tài liệu và chỉ tạo hội thoại sau khi người dùng tải PDF lên
     setQuickAction(null);
     setActiveConversationId(null);
   };
@@ -133,13 +118,13 @@ function Chat() {
       return;
     }
 
-    // Add the newly created conversation to the sidebar
+    // Thêm hội thoại vừa tạo vào danh sách trên thanh bên
     setConversations((previous) => [
       newConversation,
       ...previous,
     ]);
 
-    // Open the new conversation immediately
+    // Chuyển ngay đến hội thoại gắn với tài liệu vừa tải lên
     setActiveConversationId(newConversation._id);
   };
 
@@ -160,9 +145,7 @@ function Chat() {
           conversation._id !== conversationIdToDelete
       );
 
-      /*
-       * Deleted conversation is not active.
-       */
+      // Nếu hội thoại bị xóa không phải hội thoại đang mở, chỉ cần cập nhật lại danh sách hội thoại
       if (
         conversationIdToDelete !== activeConversationId
       ) {
@@ -170,10 +153,7 @@ function Chat() {
         return;
       }
 
-      /*
-       * Active conversation was deleted.
-       * Select another existing conversation.
-       */
+      // Nếu hội thoại đang mở bị xóa, chuyển sang hội thoại khác còn lại trong danh sách
       if (remaining.length > 0) {
         setConversations(remaining);
 
@@ -184,9 +164,7 @@ function Chat() {
         return;
       }
 
-      /*
-       * No conversations remain.
-       */
+      // Nếu không còn hội thoại nào, quay về giao diện tải tài liệu
       setConversations([]);
       setActiveConversationId(null);
 
@@ -224,11 +202,7 @@ function Chat() {
   };
 
 
-  /*
-   * Called by ChatMessagesContainer after sending
-   * the first message because the backend may have
-   * automatically changed the conversation title.
-   */
+  // Tải lại danh sách hội thoại sau khi gửi tin nhắn, vì tiêu đề hội thoại có thể được backend cập nhật tự động dựa trên nội dung trao đổi.
   const handleConversationUpdated = async () => {
     try {
       const data = await getUserConversations();
@@ -279,6 +253,7 @@ function Chat() {
 
       setIsQuizDialogOpen(false);
 
+      // Truyền thông tin hội thoại, tài liệu và cấu hình Quiz sang trang làm bài
       navigate("/quiz", {
         state: {
           conversationId: activeConversation._id,
@@ -316,7 +291,7 @@ function Chat() {
         bgcolor: "#1a1f2e",
       }}
     >
-      {/* Sidebar */}
+      {/* Thanh bên */}
       <Sidebar
         conversations={conversations}
         activeConversationId={activeConversationId}
@@ -338,7 +313,7 @@ function Chat() {
           overflow: "hidden",
         }}
       >
-        {/* Main content */}
+        {/* Vùng chính */}
         {activeConversationId ? (
           <>
             <DocumentHeader
@@ -348,7 +323,7 @@ function Chat() {
               onCreateQuiz={handleCreateQuiz}
             />
 
-            {/* Chat */}
+            {/* Khu vực hiển thị nội dung trao đổi với AI */}
             <Box
               sx={{
                 flex: 1,
@@ -375,7 +350,7 @@ function Chat() {
         )}
       </Box>
 
-      {/* Create Quiz popup */}
+      {/* Hộp thoại thiết lập số lượng và độ khó câu hỏi Quiz */}
       <QuizDialog
         open={isQuizDialogOpen}
         onClose={() => setIsQuizDialogOpen(false)}

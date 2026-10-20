@@ -36,7 +36,6 @@ function Quiz() {
     conversation._id === conversationId
   );
 
-  // Load conversations for Sidebar
   useEffect(() => {
     if (!auth?.isLoggedIn || !auth?.user) return;
 
@@ -63,7 +62,6 @@ function Quiz() {
 
   }, [auth?.isLoggedIn, auth?.user]);
 
-  // Protect the Quiz page
   useEffect(() => {
     if (auth?.isLoading) return;
 
@@ -173,11 +171,6 @@ function Quiz() {
           )
       );
 
-      /*
-       * If the conversation used by
-       * the current Quiz is deleted,
-       * return to Chat.
-       */
       if (
         conversationIdToDelete ===
         conversationId
@@ -258,7 +251,7 @@ function Quiz() {
         bgcolor: "#1a1f2e",
       }}
     >
-      {/* Sidebar */}
+      {/* Thanh bên */}
       <Sidebar
         conversations={conversations}
         activeConversationId={conversationId}
@@ -270,7 +263,7 @@ function Quiz() {
         onLogout={handleLogout}
       />
 
-      {/* Main Quiz area */}
+      {/* Vùng quiz chính*/}
       <Box
         sx={{
           flex: 1,
@@ -281,7 +274,7 @@ function Quiz() {
           overflow: "hidden",
         }}
       >
-        {/* Header */}
+        {/* Tiêu đề */}
         <QuizHeader
           conversation={activeConversation}
           onBackToChat={handleBackToChat}
@@ -321,7 +314,7 @@ function Quiz() {
           </Box>
         ) : (
           <>
-            {/* Quiz content */}
+            {/* Vùng quiz */}
             <QuizContent
               questions={questions}
               difficulty={difficulty}

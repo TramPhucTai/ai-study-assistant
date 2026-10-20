@@ -5,12 +5,7 @@ import { createQuizSchema } from "../schemas/quiz-schema.js";
 
 
 export async function generateQuizFromDocument({ document, questionCount, difficulty }) {
-  /*
-   * Make sure the PDF exists in Gemini.
-   * If the old Gemini file expired,
-   * ensureGeminiFile() should upload it again
-   * from S3.
-   */
+
   await ensureGeminiFile(document);
 
   if (!document.geminiFileUri) {

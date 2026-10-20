@@ -6,7 +6,6 @@ import { createConversation, getUserConversations, getConversation, deleteConver
 
 
 
-// Protected API, only the authenticated users can access
 const chatRoutes = Router();
 
 chatRoutes.post(

@@ -39,7 +39,7 @@ function QuizDialog({ open, onClose, onCreateQuiz }) {
           pb: 3,
         }}
       >
-        {/* Title */}
+        {/* Tiêu đề */}
         <Typography
           sx={{
             textAlign: "center",
@@ -53,7 +53,7 @@ function QuizDialog({ open, onClose, onCreateQuiz }) {
         </Typography>
 
 
-        {/* Options */}
+        {/* Lựa chọn */}
         <Box
           sx={{
             display: "flex",
@@ -61,7 +61,7 @@ function QuizDialog({ open, onClose, onCreateQuiz }) {
             mb: 7,
           }}
         >
-          {/* Number of questions */}
+          {/* Số lượng câu hỏi */}
           <Box
             sx={{
               flex: 1,
@@ -150,7 +150,7 @@ function QuizDialog({ open, onClose, onCreateQuiz }) {
           </Box>
 
 
-          {/* Difficulty */}
+          {/* Độ khó */}
           <Box
             sx={{
               flex: 1,
@@ -239,7 +239,7 @@ function QuizDialog({ open, onClose, onCreateQuiz }) {
         </Box>
 
 
-        {/* Actions */}
+        {/* Các nút chức năng */}
         <Box
           sx={{
             display: "flex",

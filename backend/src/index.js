@@ -4,7 +4,6 @@ import { connectToDatabase } from "./db/connection.js";
 
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
-// Connections and listeners
 const PORT = process.env.PORT || 5000;
 
 connectToDatabase()

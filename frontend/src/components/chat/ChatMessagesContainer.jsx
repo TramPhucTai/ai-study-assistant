@@ -14,11 +14,7 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
   const [chatMessages, setChatMessages] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  /*
-   * Helper so this component can keep its own
-   * state while also telling Chat.jsx that generation
-   * is currently happening.
-   */
+  // Cập nhật trạng thái tạo câu trả lời ở component hiện tại và thông báo trạng thái này cho Chat.jsx
   const updateGeneratingState = useCallback(
     (value) => {
       setIsGenerating(value);
@@ -51,11 +47,7 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
         content: ""
       };
 
-      /*
-       * Immediately display the user's
-       * message and an empty assistant
-       * placeholder.
-       */
+      // Hiển thị ngay tin nhắn của người dùng và tạo vị trí trống để cập nhật câu trả lời của AI
       setChatMessages((previous) => [
         ...previous,
         userMessage,
@@ -109,10 +101,7 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
           "Không thể tạo câu trả lời"
         );
 
-        /*
-         * Remove the assistant placeholder
-         * if generation fails.
-         */
+        // Xóa tin nhắn chờ của AI nếu quá trình tạo câu trả lời xảy ra lỗi
         setChatMessages((previous) => {
           const updatedMessages = [
             ...previous
@@ -137,10 +126,7 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
     }, [activeConversationId, isGenerating, onConversationUpdated, updateGeneratingState]
   );
 
-  /*
-   * Whenever the user selects another conversation,
-   * load that conversation's messages here.
-   */
+  //  Khi người dùng chuyển sang hội thoại khác, tải danh sách tin nhắn của hội thoại được chọn.
   useEffect(() => {
     if (!activeConversationId) {
       return;
@@ -225,7 +211,7 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
         overflow: "hidden",
       }}
     >
-      {/* Chat messages */}
+      {/* Khu vực hiển thị tin nhắn trong hội thoại */}
       <Box
         sx={{
           width: "100%",
@@ -289,7 +275,7 @@ function ChatMessagesContainer({ activeConversationId, onGeneratingChange, onCon
         })}
       </Box>
 
-      {/* Chat input */}
+      {/* Khu vực nhập và gửi tin nhắn đến AI */}
       <Box
         sx={{
           px: 2,
