@@ -98,26 +98,26 @@ export async function generateQuizFromDocument({ document, questionCount, diffic
 function validateQuiz(quiz, questionCount ) {
   if (!quiz || !Array.isArray(quiz.questions)) {
     throw new Error(
-      "Gemini returned an invalid quiz."
+      "Gemini trả về dữ liệu bài trắc nghiệm không hợp lệ"
     );
   }
 
   if (quiz.questions.length !== questionCount) {
     throw new Error(
-      `Expected ${questionCount} questions but received ${quiz.questions.length}.`
+      `Số lượng câu hỏi được yêu cầu là ${questionCount}, nhưng nhận được ${quiz.questions.length} câu`
     );
   }
 
   for (const question of quiz.questions) {
     if (!Array.isArray(question.options) || question.options.length !== 4) {
       throw new Error(
-        "Each quiz question must contain exactly four options."
+        "Mỗi câu hỏi trắc nghiệm phải có đúng bốn phương án trả lời"
       );
     }
 
     if (question.correctAnswer < 0 || question.correctAnswer > 3) {
       throw new Error(
-        "Invalid correctAnswer index."
+        "Chỉ số của đáp án đúng không hợp lệ"
       );
     }
   }
