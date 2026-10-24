@@ -49,7 +49,7 @@ export const userSignup = async (req, res, next) => {
     // Xóa cookie cũ trước khi tạo phiên đăng nhập mới
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
-      domain: 'localhost',
+      
       signed: true,
       path: '/'
     });
@@ -61,8 +61,7 @@ export const userSignup = async (req, res, next) => {
     expires.setDate(expires.getDate() + 7);
 
     res.cookie(COOKIE_NAME, token, { 
-      path: '/', 
-      domain: 'localhost',
+      path: '/',
       expires,
       httpOnly: true,
       signed: true,
@@ -106,7 +105,7 @@ export const userLogin = async (req, res, next) => {
     // Xóa cookie cũ trước khi cấp mã xác thực cho phiên đăng nhập mới
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
-      domain: 'localhost',
+      
       signed: true,
       path: '/'
     });
@@ -119,7 +118,7 @@ export const userLogin = async (req, res, next) => {
 
     res.cookie(COOKIE_NAME, token, { 
       path: '/', 
-      domain: 'localhost',
+      
       expires,
       httpOnly: true,
       signed: true,
@@ -192,7 +191,7 @@ export const userLogout = async (req, res, next) => {
     // Xóa cookie chứa JWT để kết thúc phiên đăng nhập
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
-      domain: 'localhost',
+      
       signed: true,
       path: '/'
     });
