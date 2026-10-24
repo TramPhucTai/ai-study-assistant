@@ -9,7 +9,7 @@ import { Toaster } from 'react-hot-toast';
 
 
 
-axios.defaults.baseURL = "http://localhost:5000/api/v1";
+axios.defaults.baseURL = "https://ai-study-assistant-backend-gvg5.onrender.com/";
 
 axios.defaults.withCredentials = true;
 
