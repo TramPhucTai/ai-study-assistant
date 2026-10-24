@@ -45,15 +45,7 @@ export const userSignup = async (req, res, next) => {
     })
 
     await user.save();
-
-    // Xóa cookie cũ trước khi tạo phiên đăng nhập mới
-    res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      
-      signed: true,
-      path: '/'
-    });
-
+    
     // Tạo JWT có thời hạn 7 ngày và lưu vào cookie
     const token = createToken(user._id.toString(), user.email, '7d')
 
@@ -65,6 +57,8 @@ export const userSignup = async (req, res, next) => {
       expires,
       httpOnly: true,
       signed: true,
+      secure: true,
+      sameSite: 'none',
     });
 
     return res.status(201).json({
@@ -102,14 +96,6 @@ export const userLogin = async (req, res, next) => {
       return res.status(403).send('Incorrect Password');
     }
 
-    // Xóa cookie cũ trước khi cấp mã xác thực cho phiên đăng nhập mới
-    res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      
-      signed: true,
-      path: '/'
-    });
-
     // Tạo JWT từ mã định danh và email của người dùng
     const token = createToken(user._id.toString(), user.email, '7d')
 
@@ -117,11 +103,12 @@ export const userLogin = async (req, res, next) => {
     expires.setDate(expires.getDate() + 7);
 
     res.cookie(COOKIE_NAME, token, { 
-      path: '/', 
-      
+      path: '/',
       expires,
       httpOnly: true,
       signed: true,
+      secure: true,
+      sameSite: 'none',
     });
 
     return res.status(201).json({
@@ -190,10 +177,11 @@ export const userLogout = async (req, res, next) => {
 
     // Xóa cookie chứa JWT để kết thúc phiên đăng nhập
     res.clearCookie(COOKIE_NAME, {
+      path: '/',
       httpOnly: true,
-      
       signed: true,
-      path: '/'
+      secure: true,
+      sameSite: 'none',
     });
 
     return res.status(201).json({
