@@ -53,7 +53,7 @@ export const logoutUser = async () => {
 
 
 
-const API_BASE_URL = "http://localhost:5000/api/v1";
+const API_BASE_URL = "https://ai-study-assistant-backend-gvg5.onrender.com/api/v1";
 
 export async function streamChatRequest(conversationId, message, onTextDelta) {
   const response = await fetch(`${API_BASE_URL}/chat/new`, {
